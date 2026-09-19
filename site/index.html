@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>陪跑台 · 通用行业解决方案架构师</title>
+<style>
+:root{--bg:#f7f7f4;--panel:#fff;--tx:#1f2430;--tx2:#6b7280;--line:#e3e4e8;--blue:#2f6bff;--blueL:#eef3ff;--green:#16a34a;--greenL:#e8f7ee;--amber:#b8860b;--amberL:#fdf6e3}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.6 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+header{padding:12px 20px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+header b{font-size:16px}
+header .sub{color:var(--tx2);font-size:12px}
+nav{display:flex;gap:6px;padding:12px 20px 0;flex-wrap:wrap}
+nav button{border:1px solid var(--line);background:#fff;color:var(--tx2);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13px}
+nav button.on{background:var(--blueL);border-color:var(--blue);color:var(--blue);font-weight:600}
+main{padding:16px 20px 70px;max-width:1080px;margin:0 auto}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.card h2{font-size:14px;margin:0 0 4px}
+.card .sub{color:var(--tx2);font-size:12.5px;margin-bottom:8px}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:7px 14px;font-weight:600;cursor:pointer;font-size:13px}
+.btn.sm{padding:5px 10px;font-size:12.5px}
+.hint{color:var(--tx2);font-size:12px}
+input,textarea,select{font:inherit;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:#fff;color:var(--tx)}
+table.dt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+table.dt th,table.dt td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+table.dt th{background:var(--blueL);font-weight:600;white-space:nowrap}
+table.dt td.wide{max-width:340px;line-height:1.5;color:var(--tx2)}
+.empty{color:var(--tx2);font-size:13px;padding:14px 0}
+.chat .body{height:420px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fafaf8}
+.msg{max-width:86%;padding:8px 12px;border-radius:12px;white-space:pre-wrap;word-break:break-word}
+.msg.u{background:#e6efff;align-self:flex-end}
+.msg.a{background:#fff;border:1px solid var(--line);align-self:flex-start}
+.msg.sys{background:#f0f0ec;color:var(--tx2);font-size:12.5px;align-self:flex-start}
+.chat .row{display:flex;gap:8px;margin-top:8px;align-items:flex-end}
+.chat textarea{flex:1;resize:none;min-height:44px}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid #cfd6e4;border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<header>
+  <b>陪跑台</b>
+  <span class="sub" id="conn"><span class="spin"></span>连接中…</span>
+  <span class="sub" style="margin-left:auto">通用行业解决方案架构师 · 火山引擎</span>
+</header>
+<nav id="tabs"></nav>
+<main id="main"></main>
+
+<script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
+<script>
+/* ===================== 基础 ===================== */
+var EP = "https://peipao-tai.app.workbuddy.host";
+var PK = "wbpk_iTGkwbktahAc8tjJawUTr9_hF8DbMgE7LS0ZVxUqBtd3NCUWrMdgW4Q";
+var AI_SYS = "你是「架构师陪跑台」的 AI 教练，服务冲刺火山引擎通用行业解决方案架构师（目标 30-60K·18薪）的候选人徐琛。背景：商业地产与零售行业的 AI 产品，如客流动线统计、运营分析、智能体 Agent。你的职责——① 点评他写的练习答案（概念复述 / 对标拆解 / 案例拆写 / 对话盘点），指出到位与缺口，给一句可直接背的版本；② 解释知识卡概念，用「为什么、怎么做、客户会怎么问」展开；③ 模拟面试追问。要求：场景化、效果化，用数字和案例说话；不讲空话套话；口吻像教练、内容可直接复用。";
+var JD_SYS = "你是招聘信息提取助手。从用户提供的 BOSS 直聘岗位截图中提取结构化信息，只输出 JSON，不要任何解释或 markdown 代码块。字段：company(字符串,公司名)、position(字符串,岗位名)、requirement(字符串,概括岗位职责与任职要求,200字内)、domains(字符串数组,从[需求理解,平台化解决方案设计,产研协同,GTM与方法论沉淀,商业洞察]中选最相关的1到3个,没有就空数组)。";
+
+var CLOUD=null, MODEL=null, VISION=null, READY=false;
+var HIST=[], GEN=false, CID=null, TAB="ai";
+
+function el(id){ return document.getElementById(id); }
+function esc(s){ return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c];}); }
+function fmtDate(v){ if(!v) return ""; var d=new Date(v); if(isNaN(d)) return String(v); return d.toISOString().slice(0,10); }
+
+/* ===================== 后端连接 ===================== */
+function initCloud(){
+  CID = "c_" + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+  if(!window.WorkBuddyCloud){ el("conn").textContent = "组件未加载（无法访问 CDN）"; return; }
+  try{ CLOUD = WorkBuddyCloud.createWorkBuddyCloud({ endpoint: EP, publishableKey: PK }); }
+  catch(e){ el("conn").textContent = "初始化失败"; return; }
+  CLOUD.llm.models.list().then(function(models){
+    var list = models.filter(function(x){ return x.disabled!==true; });
+    MODEL = list[0] || null;
+    VISION = list.filter(function(x){ return x.supportsImages===true; })[0] || null;
+    READY = !!MODEL;
+    el("conn").textContent = READY ? ("已连接 · " + (MODEL.name||MODEL.id)) : "无可用模型";
+  }).catch(function(e){
+    el("conn").textContent = "连接失败：" + ((e && e.error && e.error.code) || "网络");
+  });
+}
+
+/* ===================== 数据访问 ===================== */
+function dbList(table, orderCol){
+  return CLOUD.database.from(table).select("*").order(orderCol||"created_at", { ascending:false })
+    .then(function(r){ if(r.error) throw r.error; return r.data||[]; });
+}
+function dbAdd(table, obj){
+  return CLOUD.database.from(table).insert(obj).select()
+    .then(function(r){ if(r.error) throw r.error; return (r.data||[])[0]; });
+}
+
+/* ===================== Tab 配置 ===================== */
+var TABS = [
+  { id:"ai",     label:"AI 教练" },
+  { id:"jd",     label:"JD 解析" },
+  { id:"cards",  label:"知识卡",   table:"knowledge_cards", cols:[["title","标题"],["type","类型"],["domains","能力域"],["card_date","日期"],["concept","核心概念"]] },
+  { id:"side",   label:"辅线知识", table:"side_knowledge",  cols:[["title","标题"],["category","分类"],["content","内容"],["created_at","入库"]] },
+  { id:"study",  label:"学习记录", table:"study_logs",      cols:[["log_date","日期"],["kind","类型"],["minutes","分钟"],["content","内容"]] },
+  { id:"resume", label:"简历",     table:"resumes",         cols:[["version","版本"],["created_at","日期"],["content","内容"]] },
+  { id:"cap",    label:"能力项",   table:"capabilities",    cols:[["name","能力项"],["domain","域"],["level","等级"],["progress","进度"]] }
+];
+
+function renderTabs(){
+  var h = "";
+  TABS.forEach(function(t){ h += '<button data-tab="'+t.id+'"'+(t.id===TAB?' class="on"':'')+'>'+esc(t.label)+'</button>'; });
+  el("tabs").innerHTML = h;
+  Array.prototype.forEach.call(el("tabs").querySelectorAll("button"), function(b){
+    b.onclick = function(){ TAB = b.dataset.tab; renderTabs(); render(); };
+  });
+}
+
+/* ===================== 渲染 ===================== */
+function render(){
+  var t = TABS.filter(function(x){return x.id===TAB;})[0];
+  if(TAB==="ai") return renderAI();
+  if(TAB==="jd") return renderJD();
+  return renderTable(t);
+}
+
+function renderTable(t){
+  el("main").innerHTML = '<div class="card"><h2>'+esc(t.label)+'</h2><div class="sub">来自云端数据库的实时数据</div><div id="tbl"><span class="spin"></span>加载中…</div></div>';
+  dbList(t.table).then(function(rows){
+    if(!rows.length){ el("tbl").innerHTML = '<div class="empty">暂无数据。</div>'; return; }
+    var h = '<table class="dt"><thead><tr>';
+    t.cols.forEach(function(c){ h += "<th>"+esc(c[1])+"</th>"; });
+    h += "</tr></thead><tbody>";
+    rows.forEach(function(r){
+      h += "<tr>";
+      t.cols.forEach(function(c){
+        var wide = (c[0]==="content"||c[0]==="concept"||c[0]==="requirement");
+        var v = r[c[0]];
+        if(c[0]==="created_at") v = fmtDate(v);
+        h += '<td'+(wide?' class="wide"':'')+'>'+esc(v)+"</td>";
+      });
+      h += "</tr>";
+    });
+    h += "</tbody></table>";
+    el("tbl").innerHTML = h;
+  }).catch(function(e){
+    el("tbl").innerHTML = '<div class="empty">读取失败：'+esc(e.message||e.code||e)+'</div>';
+  });
+}
+
+/* ===================== AI 教练 ===================== */
+function renderAI(){
+  el("main").innerHTML =
+    '<div class="card"><h2>AI 教练</h2><div class="sub">把你的练习答案、概念复述、或疑问贴进来，我会结合陪跑台体系点评。</div>'+
+    '<div class="chat"><div class="body" id="chatBody"></div>'+
+    '<div class="row"><textarea id="aiInput" rows="2" placeholder="输入内容，Enter 发送 · Shift+Enter 换行"></textarea>'+
+    '<button class="btn" id="aiSend">发送</button></div></div></div>';
+  var b = el("chatBody");
+  var d = document.createElement("div");
+  d.className = "msg sys";
+  d.textContent = "我是陪跑台 AI 教练。把你的练习答案、概念复述、或疑问贴进来。";
+  b.appendChild(d);
+  var ta = el("aiInput");
+  ta.addEventListener("keydown", function(e){ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); aiSend(); } });
+  el("aiSend").onclick = aiSend;
+  ta.focus();
+}
+function aiBubble(role, text){
+  var b = el("chatBody"); if(!b) return null;
+  var d = document.createElement("div");
+  d.className = "msg " + role;
+  d.textContent = text||"";
+  b.appendChild(d); b.scrollTop = b.scrollHeight;
+  return d;
+}
+function aiSend(){
+  if(GEN) return;
+  var ta = el("aiInput"); if(!ta) return;
+  var text = (ta.value||"").trim(); if(!text) return;
+  if(!READY || !CLOUD || !MODEL){ aiBubble("sys","AI 尚未就绪，请稍候或刷新重试。"); return; }
+  ta.value = "";
+  aiBubble("u", text);
+  HIST.push({role:"user", content:text});
+  GEN = true;
+  var bubble = aiBubble("a", "");
+  var messages = [{role:"system", content:AI_SYS}].concat(HIST.slice(-16));
+  var un = CLOUD.llm.chat.completions.create({ model:MODEL.id, messages:messages, stream:true, stream_options:{include_usage:true}, conversationId:CID });
+  Promise.resolve(un).then(function(stream){
+    return (async function(){
+      var acc = "";
+      for await (var chunk of stream){
+        var dl = chunk.choices && chunk.choices[0] && chunk.choices[0].delta;
+        if(dl && dl.content){ acc += dl.content; bubble.textContent = acc; var cb=el("chatBody"); if(cb) cb.scrollTop=cb.scrollHeight; }
+      }
+    })();
+  }).then(function(){
+    GEN = false;
+    var t = bubble.textContent||""; if(t.trim()) HIST.push({role:"assistant", content:t});
+  }).catch(function(e){
+    GEN = false;
+    bubble.className = "msg sys";
+    bubble.textContent = "⚠️ " + ((e && e.error && e.error.message) || String(e));
+  });
+}
+
+/* ===================== JD 解析 ===================== */
+function renderJD(){
+  el("main").innerHTML =
+    '<div class="card" style="border-color:var(--green)"><h2>📸 BOSS 截图 → 自动解析入库</h2>'+
+    '<div class="sub">上传 BOSS 直聘 JD 截图，AI 直接识别并写入下方表格（同一页面完成，不需跳转）。</div>'+
+    '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
+    '<input id="jdFile" type="file" accept="image/*">'+
+    '<button class="btn" id="jdGo">识别并入库</button>'+
+    '<span class="hint" id="jdMsg"></span></div>'+
+    '<div id="jdPrev" style="margin-top:8px"></div></div>'+
+    '<div class="card"><h2>✏️ 手动录入</h2>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">'+
+    '<input id="mCo" placeholder="公司（必填）" style="flex:1;min-width:140px">'+
+    '<input id="mPos" placeholder="岗位（必填）" style="flex:1;min-width:140px"></div>'+
+    '<textarea id="mReq" rows="3" placeholder="JD 原文 / 核心要求" style="width:100%"></textarea>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'+
+    '<input id="mUrl" placeholder="JD 链接（选填）" style="flex:1;min-width:160px">'+
+    '<input id="mDom" placeholder="关联能力域（选填，逗号分隔）" style="width:220px">'+
+    '<button class="btn sm" id="mAdd">入库</button><span class="hint" id="mMsg"></span></div></div>'+
+    '<div class="card"><h2>已收录 JD</h2><div class="sub">共 <span id="jdCount">…</span> 条，按入库时间倒序</div><div id="jdTbl"><span class="spin"></span>加载中…</div></div>';
+
+  el("jdGo").onclick = jdGo;
+  el("mAdd").onclick = function(){
+    var co = (el("mCo").value||"").trim(), po = (el("mPos").value||"").trim();
+    if(!co || !po){ el("mMsg").textContent = "公司、岗位为必填"; return; }
+    el("mMsg").textContent = "保存中…";
+    dbAdd("jd_records", { company:co, position:po, requirement:(el("mReq").value||"").trim(), url:(el("mUrl").value||"").trim(), domains:(el("mDom").value||"").trim(), source:"手动录入" })
+      .then(function(){ el("mMsg").textContent = "已入库 ✓"; el("mCo").value=el("mPos").value=el("mReq").value=el("mUrl").value=el("mDom").value=""; refreshJD(); })
+      .catch(function(e){ el("mMsg").textContent = "失败：" + (e.message||e.code||e); });
+  };
+  refreshJD();
+}
+function refreshJD(){
+  dbList("jd_records").then(function(rows){
+    el("jdCount").textContent = rows.length;
+    if(!rows.length){ el("jdTbl").innerHTML = '<div class="empty">还没有 JD，上传截图或手动录入。</div>'; return; }
+    var h = '<table class="dt"><thead><tr><th>公司</th><th>岗位</th><th>核心要求</th><th>关联能力域</th><th>状态</th><th>入库</th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      h += "<tr><td>"+esc(r.company)+"</td><td>"+esc(r.position)+"</td><td class='wide'>"+esc(r.requirement)+"</td><td>"+esc(r.domains)+"</td><td>"+esc(r.status)+"</td><td>"+fmtDate(r.created_at)+"</td></tr>";
+    });
+    el("jdTbl").innerHTML = h + "</tbody></table>";
+  }).catch(function(e){ el("jdTbl").innerHTML = '<div class="empty">读取失败：'+esc(e.message||e.code||e)+'</div>'; });
+}
+function jdGo(){
+  var f = el("jdFile"), msg = el("jdMsg");
+  if(!f || !f.files || !f.files[0]){ msg.textContent = "请先选一张截图"; return; }
+  if(!READY){ msg.textContent = "AI 未就绪，请稍候"; return; }
+  if(!VISION){ msg.textContent = "⚠️ 当前没有支持图片识别的模型"; return; }
+  msg.textContent = "读取图片…";
+  var r = new FileReader();
+  r.onload = function(){
+    var dataURL = r.result;
+    el("jdPrev").innerHTML = '<img src="'+dataURL+'" style="max-width:200px;border:1px solid var(--line);border-radius:8px">';
+    msg.textContent = "识别中…";
+    var acc = "";
+    var p = CLOUD.llm.chat.completions.create({
+      model: VISION.id,
+      messages: [
+        { role:"system", content: JD_SYS },
+        { role:"user", content:[{type:"text", text:"请提取这份 JD"}, {type:"image_url", image_url:{url:dataURL}}] }
+      ],
+      stream: true, stream_options:{ include_usage:true }, conversationId: CID+"_jd"
+    });
+    Promise.resolve(p).then(function(stream){
+      return (async function(){
+        for await (var chunk of stream){
+          var dl = chunk.choices && chunk.choices[0] && chunk.choices[0].delta;
+          if(dl && dl.content) acc += dl.content;
+        }
+      })();
+    }).then(function(){
+      var txt = acc.trim(), m = txt.match(/\{[\s\S]*\}/); if(m) txt = m[0];
+      var obj = JSON.parse(txt);
+      var dom = obj.domains; dom = Array.isArray(dom) ? dom.join("、") : (dom||"");
+      return dbAdd("jd_records", { company:(obj.company||"").trim(), position:(obj.position||"").trim(), requirement:(obj.requirement||"").trim(), domains:dom, source:"BOSS 截图" });
+    }).then(function(){
+      msg.textContent = "已识别并入库 ✓";
+      el("jdFile").value = "";
+      refreshJD();
+    }).catch(function(e){
+      msg.textContent = "⚠️ " + ((e && e.error && e.error.message) || e.message || String(e)) + "（可改用手动录入）";
+    });
+  };
+  r.onerror = function(){ msg.textContent = "图片读取失败，请重试"; };
+  r.readAsDataURL(f.files[0]);
+}
+
+/* ===================== 启动 ===================== */
+renderTabs();
+render();
+initCloud();
+</script>
+</body>
+</html>

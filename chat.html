@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>陪跑台 · AI 教练</title>
+<style>
+  :root{ --bg:#0f1420; --panel:#161c2b; --txt:#e6ebf5; --amber:#f5b942; --muted:#8a93a6; --user:#2a3a5c; --sys:#1d2433; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; height:100%; background:var(--bg); color:var(--txt);
+    font:14px/1.6 -apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; }
+  .wrap{ display:flex; flex-direction:column; height:100%; }
+  .head{ padding:10px 14px; border-bottom:1px solid #232c40; display:flex; align-items:center; gap:8px; }
+  .head b{ font-size:15px; }
+  .head .sub{ color:var(--muted); font-size:12px; }
+  .body{ flex:1; overflow-y:auto; padding:12px 14px; display:flex; flex-direction:column; gap:10px; }
+  .ai-b{ max-width:88%; padding:9px 12px; border-radius:12px; white-space:pre-wrap; word-break:break-word; }
+  .ai-b.u{ background:var(--user); align-self:flex-end; }
+  .ai-b.a{ background:var(--panel); align-self:flex-start; border:1px solid #232c40; }
+  .ai-b.sys{ background:var(--sys); color:var(--muted); align-self:flex-start; font-size:13px; }
+  .foot{ padding:10px 12px; border-top:1px solid #232c40; }
+  textarea{ width:100%; resize:none; background:#0b0f18; color:var(--txt); border:1px solid #232c40;
+    border-radius:10px; padding:8px 10px; font:inherit; }
+  .row{ display:flex; justify-content:space-between; align-items:center; margin-top:7px; }
+  .hint{ color:var(--muted); font-size:12px; }
+  .btn{ background:var(--amber); color:#1a1205; border:0; border-radius:8px; padding:6px 14px; font-weight:600; cursor:pointer; }
+  .btn.ghost{ background:transparent; color:var(--muted); border:1px solid #2a3346; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head"><b>AI 教练</b><span class="sub" id="aiModel">连接中…</span></div>
+  <div class="body" id="aiBody"></div>
+  <div class="foot">
+    <textarea id="aiInput" rows="2" placeholder="把你的练习答案或疑问贴进来，教练会结合陪跑台体系点评…"></textarea>
+    <div class="row">
+      <span class="hint">Enter 发送 · Shift+Enter 换行</span>
+      <span style="display:flex;gap:6px">
+        <button class="btn ghost" id="aiClear">清空</button>
+        <button class="btn" id="aiSend">发送</button>
+      </span>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
+<script>
+var AI_EP = "https://peipao-tai.app.workbuddy.host";
+var AI_PK = "wbpk_iTGkwbktahAc8tjJawUTr9_hF8DbMgE7LS0ZVxUqBtd3NCUWrMdgW4Q";
+var AI_SYS = "你是「架构师陪跑台」的 AI 教练，服务冲刺火山引擎通用行业解决方案架构师（目标 30-60K·18薪）的候选人徐琛。背景：商业地产与零售行业的 AI 产品，如客流动线统计、运营分析、智能体 Agent。你的职责——① 点评他写的练习答案（概念复述 / 对标拆解 / 案例拆写 / 对话盘点），指出到位与缺口，给一句可直接背的版本；② 解释知识卡概念，用「为什么、怎么做、客户会怎么问」展开；③ 模拟面试追问。要求：场景化、效果化，用数字和案例说话；不讲空话套话；口吻像教练、内容可直接复用。";
+var AI = { cloud:null, model:null, ready:false, inited:false, history:[], generating:false, controller:null, cid:null };
+
+function aiErrText(e){
+  var code = (e && e.error && e.error.code) || "";
+  if(code.indexOf("auth_")===0) return "AI 后端拒绝了本页面的请求（域名不匹配）。";
+  if(code.indexOf("quota_")===0) return "AI 调用额度已用尽或触发限流，请稍后再试。";
+  if(code.indexOf("request_")===0) return "请求参数有误，无法发起对话。";
+  if(code.indexOf("gateway_")===0 || code.indexOf("model_")===0) return "模型服务暂时不可用，请点「发送」重试。";
+  if(code.indexOf("internal_")===0) return "服务内部错误（请求号 "+(e&&e.requestId||"")+"），请稍后重试。";
+  return (e && e.error && e.error.message) ? String(e.error.message) : ("对话出错："+String(e));
+}
+function aiEl(id){ return document.getElementById(id); }
+function aiAddMsg(role, text){
+  var body = aiEl("aiBody"); if(!body) return null;
+  var d = document.createElement("div");
+  d.className = "ai-b " + (role==="user" ? "u" : (role==="sys" ? "sys" : "a"));
+  d.textContent = text || "";
+  body.appendChild(d);
+  body.scrollTop = body.scrollHeight;
+  return d;
+}
+function aiSetStatus(t){ var m=aiEl("aiModel"); if(m) m.textContent = t; }
+function aiEnsure(){
+  if(AI.inited) return;
+  AI.inited = true;
+  AI.cid = "c_" + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+  if(!window.WorkBuddyCloud){
+    aiSetStatus("组件未加载");
+    aiAddMsg("sys","AI 组件加载失败（网络受限或 CDN 被拦截）。请确认能访问 cdn.jsdelivr.net。");
+    return;
+  }
+  try{
+    AI.cloud = WorkBuddyCloud.createWorkBuddyCloud({ endpoint: AI_EP, publishableKey: AI_PK });
+  }catch(e){ aiSetStatus("初始化失败"); aiAddMsg("sys","AI 初始化失败："+aiErrText(e)); return; }
+  aiSetStatus("连接中…");
+  AI.cloud.llm.models.list().then(function(models){
+    var m = models.find(function(x){ return x.disabled !== true; });
+    if(m){ AI.model = m; AI.ready = true; aiSetStatus("已连接 · "+(m.name||m.id)); }
+    else { aiSetStatus("暂无可用的模型"); aiAddMsg("sys","当前没有可用的模型，请联系管理员在后台启用。"); }
+  }).catch(function(e){
+    aiSetStatus("连接失败");
+    aiAddMsg("sys", aiErrText(e));
+  });
+}
+function aiSend(){
+  if(AI.generating) return;
+  var ta = aiEl("aiInput"); if(!ta) return;
+  var text = (ta.value||"").trim();
+  if(!text) return;
+  ta.value = "";
+  aiAddMsg("user", text);
+  AI.history.push({role:"user", content:text});
+  aiRun();
+}
+function aiRun(){
+  if(!AI.ready || !AI.cloud || !AI.model){
+    aiAddMsg("sys","AI 尚未就绪，请稍候或刷新重试。"); return;
+  }
+  AI.generating = true;
+  AI.controller = new AbortController();
+  var sendBtn = aiEl("aiSend"), stopBtn = aiEl("aiStop");
+  if(sendBtn) sendBtn.classList.add("hidden");
+  if(stopBtn) stopBtn.classList.remove("hidden");
+  var bubble = aiAddMsg("assistant", "");
+  var messages = [{role:"system", content:AI_SYS}].concat(AI.history.slice(-16));
+  var p = AI.cloud.llm.chat.completions.create({
+    model: AI.model.id,
+    messages: messages,
+    stream: true,
+    stream_options: { include_usage: true },
+    conversationId: AI.cid,
+    signal: AI.controller.signal
+  });
+  Promise.resolve(p).then(function(stream){
+    return aiConsume(stream, bubble);
+  }).catch(function(e){
+    if(e && (e.name==="AbortError" || (e.error&&e.error.code==="request_aborted"))) return;
+    var prev = bubble.textContent || "";
+    bubble.textContent = (prev ? prev+"\n\n" : "") + "⚠️ " + aiErrText(e);
+    bubble.className = "ai-b sys";
+  }).then(function(){
+    AI.generating = false;
+    if(sendBtn) sendBtn.classList.remove("hidden");
+    if(stopBtn) stopBtn.classList.add("hidden");
+    if(bubble.className.indexOf("sys")<0){
+      var t = bubble.textContent || "";
+      if(t.trim()) AI.history.push({role:"assistant", content:t});
+    }
+  });
+}
+function aiConsume(stream, bubble){
+  return new Promise(function(resolve, reject){
+    (async function(){
+      try{
+        var acc = "";
+        for await (var chunk of stream){
+          var delta = chunk.choices && chunk.choices[0] && chunk.choices[0].delta;
+          if(delta && delta.content){
+            acc += delta.content;
+            bubble.textContent = acc;
+            var body = aiEl("aiBody"); if(body) body.scrollTop = body.scrollHeight;
+          }
+        }
+        resolve();
+      }catch(e){ reject(e); }
+    })();
+  });
+}
+(function init(){
+  aiEnsure();
+  if(aiEl("aiBody").children.length===0){
+    aiAddMsg("sys","我是陪跑台 AI 教练。把你的练习答案、概念复述、或疑问贴进来，我会结合陪跑台体系给你点评和建议。");
+  }
+  aiEl("aiSend").onclick = aiSend;
+  aiEl("aiClear").onclick = function(){ AI.history=[]; aiEl("aiBody").innerHTML=""; aiAddMsg("sys","已清空对话。"); };
+  var ta = aiEl("aiInput");
+  if(ta) ta.addEventListener("keydown", function(e){ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); aiSend(); } });
+})();
+</script>
+</body>
+</html>

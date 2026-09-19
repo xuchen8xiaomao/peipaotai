@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>陪跑台 · AI 教练</title>
+<style>
+  :root{ --bg:#0f1420; --panel:#161c2b; --txt:#e6ebf5; --amber:#f5b942; --muted:#8a93a6; --user:#2a3a5c; --sys:#1d2433; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; height:100%; background:var(--bg); color:var(--txt);
+    font:14px/1.6 -apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; }
+  .wrap{ display:flex; flex-direction:column; height:100%; }
+  .head{ padding:10px 14px; border-bottom:1px solid #232c40; display:flex; align-items:center; gap:8px; }
+  .head b{ font-size:15px; }
+  .head .sub{ color:var(--muted); font-size:12px; }
+  .body{ flex:1; overflow-y:auto; padding:12px 14px; display:flex; flex-direction:column; gap:10px; }
+  .ai-b{ max-width:88%; padding:9px 12px; border-radius:12px; white-space:pre-wrap; word-break:break-word; }
+  .ai-b.u{ background:var(--user); align-self:flex-end; }
+  .ai-b.a{ background:var(--panel); align-self:flex-start; border:1px solid #232c40; }
+  .ai-b.sys{ background:var(--sys); color:var(--muted); align-self:flex-start; font-size:13px; }
+  .foot{ padding:10px 12px; border-top:1px solid #232c40; }
+  textarea{ width:100%; resize:none; background:#0b0f18; color:var(--txt); border:1px solid #232c40;
+    border-radius:10px; padding:8px 10px; font:inherit; }
+  .row{ display:flex; justify-content:space-between; align-items:center; margin-top:7px; }
+  .hint{ color:var(--muted); font-size:12px; }
+  .btn{ background:var(--amber); color:#1a1205; border:0; border-radius:8px; padding:6px 14px; font-weight:600; cursor:pointer; }
+  .btn.ghost{ background:transparent; color:var(--muted); border:1px solid #2a3346; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head"><b>AI 教练</b><span class="sub" id="aiModel">连接中…</span></div>
+  <div id="jdBox" style="padding:8px 14px;border-bottom:1px solid #232c40;font-size:12px;color:#8a93a6">
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <input id="jdFile" type="file" accept="image/*" style="font-size:12px;max-width:190px">
+      <button class="btn" id="jdGo" style="padding:5px 12px">识别 BOSS 截图</button>
+    </div>
+    <div id="jdMsg" style="margin-top:6px;color:#f5b942"></div>
+  </div>
+  <div class="body" id="aiBody"></div>
+  <div class="foot">
+    <textarea id="aiInput" rows="2" placeholder="把你的练习答案或疑问贴进来，教练会结合陪跑台体系点评…"></textarea>
+    <div class="row">
+      <span class="hint">Enter 发送 · Shift+Enter 换行</span>
+      <span style="display:flex;gap:6px">
+        <button class="btn ghost" id="aiClear">清空</button>
+        <button class="btn" id="aiSend">发送</button>
+      </span>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
+<script>
+var AI_EP = "https://peipao-tai.app.workbuddy.host";
+var AI_PK = "wbpk_iTGkwbktahAc8tjJawUTr9_hF8DbMgE7LS0ZVxUqBtd3NCUWrMdgW4Q";
+var AI_SYS = "你是「架构师陪跑台」的 AI 教练，服务冲刺火山引擎通用行业解决方案架构师（目标 30-60K·18薪）的候选人徐琛。背景：商业地产与零售行业的 AI 产品，如客流动线统计、运营分析、智能体 Agent。你的职责——① 点评他写的练习答案（概念复述 / 对标拆解 / 案例拆写 / 对话盘点），指出到位与缺口，给一句可直接背的版本；② 解释知识卡概念，用「为什么、怎么做、客户会怎么问」展开；③ 模拟面试追问。要求：场景化、效果化，用数字和案例说话；不讲空话套话；口吻像教练、内容可直接复用。";
+var AI = { cloud:null, model:null, ready:false, inited:false, history:[], generating:false, controller:null, cid:null };
+
+function aiErrText(e){
+  var code = (e && e.error && e.error.code) || "";
+  if(code.indexOf("auth_")===0) return "AI 后端拒绝了本页面的请求（域名不匹配）。";
+  if(code.indexOf("quota_")===0) return "AI 调用额度已用尽或触发限流，请稍后再试。";
+  if(code.indexOf("request_")===0) return "请求参数有误，无法发起对话。";
+  if(code.indexOf("gateway_")===0 || code.indexOf("model_")===0) return "模型服务暂时不可用，请点「发送」重试。";
+  if(code.indexOf("internal_")===0) return "服务内部错误（请求号 "+(e&&e.requestId||"")+"），请稍后重试。";
+  return (e && e.error && e.error.message) ? String(e.error.message) : ("对话出错："+String(e));
+}
+function aiEl(id){ return document.getElementById(id); }
+function aiAddMsg(role, text){
+  var body = aiEl("aiBody"); if(!body) return null;
+  var d = document.createElement("div");
+  d.className = "ai-b " + (role==="user" ? "u" : (role==="sys" ? "sys" : "a"));
+  d.textContent = text || "";
+  body.appendChild(d);
+  body.scrollTop = body.scrollHeight;
+  return d;
+}
+function aiSetStatus(t){ var m=aiEl("aiModel"); if(m) m.textContent = t; }
+function aiEnsure(force){
+  if(AI.inited && !force) return;
+  AI.inited = true;
+  AI.ready = false;
+  if(!AI.cid) AI.cid = "c_" + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+  if(!window.WorkBuddyCloud){
+    aiSetStatus("组件未加载");
+    aiAddMsg("sys","AI 组件加载失败（网络受限或 CDN 被拦截）。请确认能访问 cdn.jsdelivr.net。");
+    return;
+  }
+  if(!AI.cloud){
+    try{
+      AI.cloud = WorkBuddyCloud.createWorkBuddyCloud({ endpoint: AI_EP, publishableKey: AI_PK });
+    }catch(e){ aiSetStatus("初始化失败"); aiAddMsg("sys","AI 初始化失败："+aiErrText(e)); return; }
+  }
+  aiSetStatus("连接中…");
+  AI.cloud.llm.models.list().then(function(models){
+    var m = models.find(function(x){ return x.disabled !== true; });
+    if(m){ AI.model = m; AI.ready = true; AI.retry = 0; aiSetStatus("已连接 · "+(m.name||m.id)); }
+    else { aiSetStatus("暂无可用的模型"); aiAddMsg("sys","当前没有可用的模型，请联系管理员在后台启用。"); }
+  }).catch(function(e){
+    var code = (e && e.error && e.error.code) || "";
+    aiSetStatus("连接失败" + (code ? ":" + code : ""));
+    aiAddMsg("sys", aiErrText(e) + (code ? "（错误码 " + code + "）" : ""));
+    AI.retry = (AI.retry || 0) + 1;
+    if(AI.retry <= 3){
+      aiAddMsg("sys", "正在自动重试连接（第 " + AI.retry + " 次）…");
+      setTimeout(function(){ aiEnsure(true); }, 1200 * AI.retry);
+    }
+  });
+}
+function aiSend(){
+  if(AI.generating) return;
+  var ta = aiEl("aiInput"); if(!ta) return;
+  var text = (ta.value||"").trim();
+  if(!text) return;
+  ta.value = "";
+  aiAddMsg("user", text);
+  AI.history.push({role:"user", content:text});
+  aiRun();
+}
+function aiRun(){
+  if(!AI.ready || !AI.cloud || !AI.model){
+    aiAddMsg("sys","AI 尚未就绪，正在尝试重新连接…");
+    AI.retry = 0;
+    aiEnsure(true);
+    return;
+  }
+  AI.generating = true;
+  AI.controller = new AbortController();
+  var sendBtn = aiEl("aiSend"), stopBtn = aiEl("aiStop");
+  if(sendBtn) sendBtn.classList.add("hidden");
+  if(stopBtn) stopBtn.classList.remove("hidden");
+  var bubble = aiAddMsg("assistant", "");
+  var messages = [{role:"system", content:AI_SYS}].concat(AI.history.slice(-16));
+  var p = AI.cloud.llm.chat.completions.create({
+    model: AI.model.id,
+    messages: messages,
+    stream: true,
+    stream_options: { include_usage: true },
+    conversationId: AI.cid,
+    signal: AI.controller.signal
+  });
+  Promise.resolve(p).then(function(stream){
+    return aiConsume(stream, bubble);
+  }).catch(function(e){
+    if(e && (e.name==="AbortError" || (e.error&&e.error.code==="request_aborted"))) return;
+    var prev = bubble.textContent || "";
+    bubble.textContent = (prev ? prev+"\n\n" : "") + "⚠️ " + aiErrText(e);
+    bubble.className = "ai-b sys";
+  }).then(function(){
+    AI.generating = false;
+    if(sendBtn) sendBtn.classList.remove("hidden");
+    if(stopBtn) stopBtn.classList.add("hidden");
+    if(bubble.className.indexOf("sys")<0){
+      var t = bubble.textContent || "";
+      if(t.trim()) AI.history.push({role:"assistant", content:t});
+    }
+  });
+}
+function aiConsume(stream, bubble){
+  return new Promise(function(resolve, reject){
+    (async function(){
+      try{
+        var acc = "";
+        for await (var chunk of stream){
+          var delta = chunk.choices && chunk.choices[0] && chunk.choices[0].delta;
+          if(delta && delta.content){
+            acc += delta.content;
+            bubble.textContent = acc;
+            var body = aiEl("aiBody"); if(body) body.scrollTop = body.scrollHeight;
+          }
+        }
+        resolve();
+      }catch(e){ reject(e); }
+    })();
+  });
+}
+function jdExtractFromImage(dataURL){
+  var report=function(ok,message){
+    try{ if(window.opener) window.opener.postMessage({type:"jd-status", ok:ok, message:message}, "*"); }catch(e){}
+    try{ if(window.parent && window.parent!==window) window.parent.postMessage({type:"jd-status", ok:ok, message:message}, "*"); }catch(e){}
+    var m=document.getElementById("jdMsg"); if(m) m.textContent=(ok?"":"⚠️ ")+message;
+  };
+  report(true, "已收到截图，正在连接 AI 模型…");
+  if(location.hostname.indexOf("app.workbuddy.host") < 0){
+    report(false, "当前页面不是教练独立运行环境，请在陪跑台空间页 JD 页重试，或改用「手动录入 JD」。"); return;
+  }
+  if(!AI.cloud){ aiEnsure(); }
+  if(!AI.cloud){ report(false, "AI 后端未就绪，请稍候刷新重试。"); return; }
+  var listP = AI.cloud.llm.models.list();
+  var listTO = new Promise(function(_,rej){ setTimeout(function(){ rej(new Error("MODEL_LIST_TIMEOUT")); }, 20000); });
+  Promise.race([listP, listTO]).then(function(models){
+    var vm = models.find(function(x){ return x.disabled !== true && x.supportsImages === true; });
+    if(!vm){ report(false, "当前没有支持图片识别（视觉）的模型，请改用 JD 页的「手动录入 JD」。可在 cloud-service 后台为该应用开通视觉模型。"); return; }
+    var sysP = "你是招聘信息提取助手。从用户提供的 BOSS 直聘岗位截图中提取结构化信息，只输出 JSON，不要任何解释或 markdown 代码块。字段：公司(字符串)、岗位(字符串)、核心要求(字符串，概括岗位职责与任职要求，200 字内)、关联能力域(字符串数组，从[需求理解,平台化解决方案设计,产研协同,GTM与方法论沉淀,商业洞察]中选最相关的 1 到 3 个，没有就空数组)。";
+    report(true, "正在用视觉模型识别中…");
+    var bubble = aiAddMsg("assistant", "识别中…");
+    var cid = (AI.cid || "c") + "_jd";
+    var messages = [
+      { role:"system", content:sysP },
+      { role:"user", content:[{ type:"text", text:"请提取这份 JD" }, { type:"image_url", image_url:{ url:dataURL } }] }
+    ];
+    var createP = AI.cloud.llm.chat.completions.create({ model: vm.id, messages:messages, stream:true, stream_options:{ include_usage:true }, conversationId: cid });
+    var createTO = new Promise(function(_,rej){ setTimeout(function(){ rej(new Error("CREATE_TIMEOUT")); }, 25000); });
+    var acc = "";
+    Promise.race([createP, createTO]).then(function(stream){
+      return (async function(){
+        for await (var chunk of stream){
+          var d = chunk.choices && chunk.choices[0] && chunk.choices[0].delta;
+          if(d && d.content){ acc += d.content; bubble.textContent = acc; }
+        }
+      })();
+    }).then(function(){
+      var txt = acc.trim();
+      try{
+        var m = txt.match(/\{[\s\S]*\}/); if(m) txt = m[0];
+        var obj = JSON.parse(txt);
+        try{ if(window.opener) window.opener.postMessage({ type:"jd-result", jd:obj }, "*"); }catch(e){}
+        try{ if(window.parent && window.parent!==window) window.parent.postMessage({ type:"jd-result", jd:obj }, "*"); }catch(e){}
+        aiAddMsg("assistant", "已识别：公司「"+(obj.公司||"")+"」岗位「"+(obj.岗位||"")+"」。已回传陪跑台存入 JD 表格。");
+      }catch(err){
+        report(false, "识别结果解析失败，请改用 JD 页的「手动录入 JD」。原始输出：\n"+txt.slice(0,600));
+      }
+    }).catch(function(e){
+      if(e && e.message==="CREATE_TIMEOUT"){ report(false, "识别请求超时：视觉模型未响应，疑似该应用未开通视觉模型或模型 API 未配置。请改用手动录入，或联系管理员开通视觉模型。"); }
+      else { report(false, "识别出错："+aiErrText(e)); }
+    });
+  }).catch(function(e){
+    if(e && e.message==="MODEL_LIST_TIMEOUT"){ report(false, "AI 后端无响应：获取模型列表超时，疑似未配置模型 API。请稍后重试或手动录入。"); }
+    else { report(false, "模型列表获取失败："+aiErrText(e)); }
+  });
+}
+window.addEventListener("message", function(e){
+  try{
+    if(e.data && e.data.type === "jd-extract" && e.data.image){ jdExtractFromImage(e.data.image); }
+  }catch(err){}
+});
+(function(){
+  var g=document.getElementById("jdGo");
+  if(g) g.onclick=function(){
+    var f=document.getElementById("jdFile"), m=document.getElementById("jdMsg");
+    if(!f || !f.files || !f.files[0]){ if(m) m.textContent="请先选一张 BOSS 截图"; return; }
+    var r=new FileReader();
+    r.onload=function(){ jdExtractFromImage(r.result); };
+    r.onerror=function(){ if(m) m.textContent="图片读取失败，请重试"; };
+    r.readAsDataURL(f.files[0]);
+  };
+})();
+window.parent.postMessage({ type:"jd-ready" }, "*");
+(function init(){
+  aiEnsure();
+  if(aiEl("aiBody").children.length===0){
+    aiAddMsg("sys","我是陪跑台 AI 教练。把你的练习答案、概念复述、或疑问贴进来，我会结合陪跑台体系给你点评和建议。");
+  }
+  aiEl("aiSend").onclick = aiSend;
+  aiEl("aiClear").onclick = function(){ AI.history=[]; aiEl("aiBody").innerHTML=""; aiAddMsg("sys","已清空对话。"); };
+  var ta = aiEl("aiInput");
+  if(ta) ta.addEventListener("keydown", function(e){ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); aiSend(); } });
+})();
+</script>
+</body>
+</html>

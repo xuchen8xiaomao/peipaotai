@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html data-page-node-id="Vey6A8HnfwVa30Yel10CGq" lang="zh-CN">
+<head data-page-node-id="G63IJwRbzf7k2hhuCkzg7Z">
+<script data-page-node-id="5HZg3erjYufpDKgGjxnVjt" src="/page/page_comm/inject.js"></script>
+<meta data-page-node-id="VV6E1uvVdlHj3q3bYHhmYJ" charset="utf-8">
+<meta data-page-node-id="FQtYhS7zTTjGBOHMcMmZTf" content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport">
+<title data-page-node-id="EaEE7jgrA5hovWGL0Sr01P" data-pnid-children="Gy3YzbQ6pv0SU8UBdQeaTl">架构师陪跑台 · 通用行业解决方案架构师（火山引擎）</title>
+<style data-page-node-id="suG01kP2A90N0rwLfLFnME" data-pnid-children="baQSlstOySSiYGniZMzwST">
+:root{
+  --bg:#f6f6f4; --card:#fff; --line:#e6e4de; --line2:#d6d3ca;
+  --tx:#1f1f1e; --tx2:#6b6a66; --tx3:#9d9b95;
+  --blue:#185FA5; --blueL:#E6F1FB; --blueD:#0C447C;
+  --amber:#854F0B; --amberL:#FAEEDA;
+  --teal:#0F6E56; --tealL:#E1F5EE;
+  --red:#A32D2D; --redL:#FCEBEB;
+  --green:#3B6D11; --greenL:#EAF3DE;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);
+  font:13px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:18px 16px 70px}
+h1{font-size:18px;font-weight:600;margin:0 0 4px}
+h2{font-size:15px;font-weight:600;margin:0 0 10px}
+.sub{color:var(--tx2);font-size:12px}
+
+header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.badge{display:inline-block;background:var(--blueL);color:var(--blueD);border-radius:999px;padding:2px 10px;font-size:11px;margin:0 6px 4px 0}
+.badge.g{background:var(--greenL);color:var(--green)}
+
+nav.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+nav.tabs button{background:none;border:none;padding:10px 12px;font:inherit;font-size:13px;color:var(--tx2);
+  cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+nav.tabs button.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;margin-bottom:12px}
+.grid{display:grid;gap:10px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+.kpi .n{font-size:25px;font-weight:600;line-height:1.2}
+.kpi .l{font-size:11px;color:var(--tx2);margin-top:2px}
+.kpi .d{font-size:11px;color:var(--tx3);margin-top:3px}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-weight:600;color:var(--tx2);font-size:11px;padding:7px 8px;border-bottom:1px solid var(--line2);white-space:nowrap}
+td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:center;white-space:nowrap}
+
+.bar{height:6px;border-radius:3px;background:#eceae4;overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:3px;background:var(--blue);transition:width .25s}
+.bar.teal>i{background:var(--teal)} .bar.amber>i{background:#BA7517} .bar.red>i{background:var(--red)}
+
+.lv{display:inline-flex;gap:1px;background:#f0eee8;border-radius:6px;padding:2px}
+.lv button{width:26px;height:24px;border:none;background:none;border-radius:4px;font:inherit;font-size:11px;
+  color:var(--tx2);cursor:pointer;padding:0}
+.lv button:hover{background:#e2dfd6}
+.lv button.on{background:var(--blue);color:#fff;font-weight:600}
+.lv button.on[data-lv="4"]{background:var(--teal)}
+.lv button.on[data-lv="0"]{background:#888780}
+
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;background:#f0eee8;color:var(--tx2);white-space:nowrap}
+.tag.ok{background:var(--greenL);color:var(--green)}
+.tag.warn{background:var(--amberL);color:var(--amber)}
+.tag.bad{background:var(--redL);color:var(--red)}
+.tag.blue{background:var(--blueL);color:var(--blueD)}
+
+.task{display:flex;gap:11px;padding:14px 0;border-bottom:1px solid var(--line)}
+.task:last-child{border-bottom:none}
+.task input[type=checkbox]{width:18px;height:18px;margin-top:2px;accent-color:var(--blue);flex-shrink:0}
+.task .t{flex:1;min-width:0}
+.task .ttl{font-weight:600;font-size:13.5px}
+.task.done .ttl{color:var(--tx3);text-decoration:line-through}
+
+textarea,input[type=text]{width:100%;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;
+  font:inherit;font-size:12.5px;background:#fcfcfa;color:var(--tx);resize:vertical}
+textarea:focus{outline:none;border-color:var(--blue);background:#fff}
+
+button.btn{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:7px 14px;font:inherit;font-size:12.5px;cursor:pointer}
+button.btn:hover{background:var(--blueD)}
+button.btn.ghost{background:#fff;color:var(--tx);border:1px solid var(--line2)}
+button.btn.ghost:hover{background:#f4f2ec}
+button.btn.sm{padding:4px 10px;font-size:11.5px;border-radius:6px}
+button.btn[disabled]{opacity:.5;cursor:default}
+
+.kcard{border:1px solid var(--line);border-radius:var(--r);margin-bottom:9px;overflow:hidden;background:#fff}
+.kcard>.kh{padding:12px 14px;cursor:pointer;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.kcard>.kh:hover{background:#faf9f6}
+.kcard>.kb{padding:0 14px 14px;border-top:1px solid var(--line);font-size:12.5px}
+.kt{font-weight:600;font-size:13.5px;flex:1;min-width:0}
+.sec{margin-top:11px}
+.sec .sh{font-size:11px;font-weight:600;color:var(--blueD);background:var(--blueL);display:inline-block;padding:1px 8px;border-radius:4px;margin-bottom:5px}
+.sec .sh.a{color:var(--amber);background:var(--amberL)}
+.sec .sh.g{color:var(--green);background:var(--greenL)}
+.sec .sh.t{color:var(--teal);background:var(--tealL)}
+
+.blk{background:#fbfaf6;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:12.5px;line-height:1.72}
+.blk p{margin:0 0 5px}
+.blk p:last-child,.blk ul:last-child{margin-bottom:0}
+.blk ul{margin:0 0 6px;padding-left:18px}
+.blk li{margin-bottom:3px}
+.mk{font-size:11px;font-weight:600;color:var(--blueD);background:var(--blueL);display:inline-block;padding:1px 8px;border-radius:4px;margin:10px 0 4px}
+.blk>.mk:first-child{margin-top:0}
+
+.tmr{display:flex;align-items:center;gap:9px;margin-top:10px;flex-wrap:wrap;
+  background:#fbfaf6;border:1px solid var(--line);border-radius:8px;padding:8px 11px}
+.tnum{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:.5px;min-width:78px}
+.tnum.run{color:var(--blue)} .tnum.over{color:var(--red)} .tnum.done{color:var(--teal)}
+
+.lk{margin-top:8px;padding-left:18px;font-size:12.5px;line-height:1.8}
+.lk a{color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blueL)}
+.lk span{color:var(--tx2)}
+
+.ask{margin-top:10px;border-top:1px dashed var(--line2);padding-top:10px}
+.qa{background:#fbfaf6;border-left:3px solid var(--blue);padding:7px 11px;margin-top:7px;font-size:12.5px;border-radius:0 6px 6px 0}
+.qa.wait{border-left-color:var(--amber)}
+.qa .qq{color:var(--tx)}
+.qa .aa{color:var(--tx2);margin-top:5px;padding-top:5px;border-top:1px solid var(--line);white-space:pre-wrap}
+
+.bars{display:flex;align-items:flex-end;gap:4px;height:96px;margin-top:10px}
+.bars .b{flex:1;background:var(--blueL);border-radius:3px 3px 0 0;min-height:2px;position:relative}
+.bars .b.zero{background:#f0eee8}
+.bx{display:flex;gap:4px;margin-top:4px;font-size:10px;color:var(--tx3)}
+
+.q{margin-top:13px}
+.q .qt{font-size:12.5px;margin-bottom:5px}
+.q .qt b{color:var(--blue);font-weight:600}
+.hint{font-size:11.5px;color:var(--tx3);line-height:1.6}
+.row-between{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hidden{display:none!important}
+.banner{background:var(--amberL);color:var(--amber);border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:12px}
+.banner.err{background:var(--redL);color:var(--red)}
+.loading{padding:40px 0;text-align:center;color:var(--tx3)}
+footer{color:var(--tx3);font-size:11.5px;margin-top:22px;border-top:1px solid var(--line);padding-top:11px}
+
+.chip{background:#f0eee8;border:1px solid var(--line);color:var(--tx2);border-radius:999px;padding:3px 11px;font:inherit;font-size:12px;cursor:pointer}
+.chip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.chip:hover{filter:brightness(.97)}
+.qbcard{border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px;overflow:hidden;background:#fff}
+.qbcard>.qbh{padding:11px 13px;cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.qbcard>.qbh:hover{background:#faf9f6}
+.qbcard>.qbh .qbt{flex:1;min-width:0;font-size:13px;font-weight:500;line-height:1.55}
+.qbcard>.qbh .qbtags{display:flex;gap:4px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;margin-top:2px}
+.qbcard>.qbb{padding:0 13px 4px;border-top:1px solid var(--line);background:#fcfcfb}
+.qbcard>.qbfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 13px;border-top:1px solid var(--line)}
+.qbcard>.qbfoot .sub{flex:1;min-width:0}
+
+@media(max-width:860px){
+  .g4{grid-template-columns:1fr 1fr}
+  .wrap{padding:14px 12px 60px}
+  .card{padding:13px 13px}
+  table{font-size:12px}
+  th,td{padding:6px 5px}
+  .lv button{width:23px;height:22px}
+  .tnum{font-size:18px;min-width:70px}
+}
+
+/* AI 教练浮窗 */
+#aiFab{position:fixed;right:18px;bottom:18px;z-index:50;background:var(--blue);color:#fff;border:none;border-radius:999px;
+  padding:11px 16px;font:600 13px/1 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;cursor:pointer;
+  box-shadow:0 6px 18px rgba(24,95,165,.35);display:flex;align-items:center;gap:7px}
+#aiFab:hover{background:var(--blueD)}
+#aiPanel{position:fixed;right:18px;bottom:74px;z-index:51;width:384px;max-width:calc(100vw - 32px);height:68vh;max-height:580px;
+  background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.18);
+  display:flex;flex-direction:column;overflow:hidden}
+#aiHead{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--blueL)}
+#aiHead b{color:var(--blueD)}
+#aiHead .sub{font-size:11px;color:var(--blueD);margin-left:3px}
+#aiBody{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:#fcfcfa}
+#aiBody::-webkit-scrollbar{width:7px}
+#aiBody::-webkit-scrollbar-thumb{background:#d6d3ca;border-radius:4px}
+#aiFoot{padding:9px 11px;border-top:1px solid var(--line);background:#fbfaf6}
+#aiFoot textarea{border-radius:8px}
+.ai-b{font-size:12.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word;padding:8px 11px}
+.ai-b.u{align-self:flex-end;max-width:86%;background:var(--blue);color:#fff;border-radius:13px 13px 3px 13px}
+.ai-b.a{align-self:flex-start;max-width:92%;background:#f0eee8;color:var(--tx);border-radius:13px 13px 13px 3px}
+.ai-b.sys{align-self:stretch;max-width:100%;background:var(--amberL);color:var(--amber);border-radius:8px;font-size:11.5px;line-height:1.5}
+@media(max-width:520px){#aiPanel{right:8px;left:8px;width:auto;bottom:64px}}
+
+/* 上传弹窗（简历 / JD 录入） */
+.modal-mask{position:fixed;inset:0;background:rgba(20,20,18,.42);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.modal-mask.hidden{display:none}
+.modal{width:560px;max-width:100%;background:var(--card);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.22);overflow:hidden}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-bottom:1px solid var(--line);background:var(--blueL)}
+.modal-head b{color:var(--blueD);font-size:14px}
+.modal-close{border:none;background:none;font-size:22px;line-height:1;color:var(--tx2);cursor:pointer;padding:0 6px}
+.modal-close:hover{color:var(--tx)}
+.modal-body{padding:16px}
+.xsec{border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:12px}
+.xsec h3{margin:0 0 6px;font-size:13.5px}
+/* 简历预览（点击展开全文） */
+.rv{background:#fff;border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.rv>.rvh{padding:12px 14px;cursor:pointer;display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.rv>.rvh:hover{background:#faf9f6}
+.rvprev{color:var(--tx2);font-size:12px;white-space:pre-wrap;max-height:66px;overflow:hidden;margin-top:6px;line-height:1.6}
+.rv.open .rvprev{max-height:none;color:var(--tx)}
+/* 只读警告横幅 */
+.robanner{background:#fff4f4;border:1px solid #f3c2c2;color:#b42318;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;line-height:1.55}
+.robanner b{color:#b42318}
+.robtn{display:inline-block;margin-left:8px;color:#fff;background:var(--blue);border-radius:8px;padding:5px 11px;text-decoration:none;font-weight:600;font-size:12.5px}
+.robtn:hover{background:var(--blueD)}
+/* 简历标题加粗 + 换行美化 */
+.rvtitle{font-weight:700;font-size:13.5px;color:var(--tx);margin-bottom:7px;line-height:1.45}
+.rvprev{white-space:pre-wrap;max-height:88px}
+/* JD 预览表格（点行展开全部介绍） */
+.jdtab tr.jdrow{cursor:pointer}
+.jdtab tr.jdrow:hover{background:#faf9f6}
+.jdtab tr.jdmore{display:none}
+.jdtab tr.jdrow.open + tr.jdmore{display:table-row}
+.jdtab .jdmore>td{background:#fcfcfb;border-top:none;padding:0}
+.jdtab .jdwrap{padding:12px 14px}
+.jdtab .jdbody{white-space:pre-wrap;font-size:12.5px;line-height:1.72}
+</style>
+<style data-page-node-id="z2R0xmVHLzGRaEhnqTwdaX" data-pnid-children="tJW9dOZVoZZADFXP8R04aZ">
+.wf{column-count:2;column-gap:12px;margin-top:4px}
+@media(max-width:640px){.wf{column-count:1}}
+.wfc{break-inside:avoid;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 13px;margin:0 0 12px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.wfc:hover{border-color:var(--blue)}
+.wfc.open{border-color:var(--blue);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.wfc .wt{font-weight:600;font-size:14px;line-height:1.45;color:var(--tx)}
+.wfc .wm{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.wfc .chev{margin-left:auto;color:var(--tx2);font-size:12px;transition:transform .15s}
+.wfc.open .chev{transform:rotate(180deg)}
+.wfc .wb{display:none;margin-top:10px;border-top:1px dashed var(--line);padding-top:9px}
+.wfc.open .wb{display:block}
+.tag.teal{background:#e6f7f4;color:#0a7d6b;border-color:transparent}
+</style>
+<script data-page-node-id="Tx2NXsUYDzvrS37VzrIrOa" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body data-page-node-id="IcPQWPffclQrVXfuKHq8Lh">
+<div id="resumeStatic" hidden>
+个人简介
+6 年商业地产与智慧城市解决方案/产品经验，近 2 年聚焦 AI 产品——主导 3 个 AI 应用从 0 到 1 落地（企业知识库问答、园区 Multi-Agent 智能客服、销售 AI 评测系统），单系统服务 2000+ 用户。
+懂技术边界也懂业务痛点：能讲清「为什么用 RAG / Agent / 多智能体」，而非堆名词；能把甲方的模糊诉求翻译成可落地的产品方案。
+擅长在多方协作（研发 / 算法 / 甲方多部门）中牵头定架构、控验收，主导华润体系多个商业综合体 AI 方案从需求调研到投标落地。
+工作经历
+爱笔（北京）智能科技有限公司 | 解决方案产品经理 | 2025.11–至今
+1. 产品方案体系建设与业务赋能
+牵头 7 大 AI 产品（智能体、精准客流、停车、导航、导视屏等）的标准化方案体系搭建：
+• 为什么做：销售/新人面对 7 条产品线讲不清差异，客户对接口径不统一，方案可信度低。
+• 怎么做：联动研发梳理各产品白皮书，把计算机视觉统计（客流/车辆 re-ID 时空动线追踪与整合）、数字孪生、SLAM 建图、LLM 意图理解、Workflow 编排、Agent 统一入口等关键技术的「原理 + 落地场景」写清；整合成覆盖多业态的数字化业务架构。
+• 效果：沉淀标准宣讲文件 + FAQ 知识库，面向销售/新人做产品培训，对接客户技术疑问有统一口径。
+2. 华润网络万象星 AI 智能体建设项目
+华润万象生活微信小程序 AI 化改造（万象星智能体）：
+• 需求：甲方要革新小程序模式、实现面客端用户场景全覆盖，提升会员运营效率与转化。
+• 方案：牵头整体方案规划，以「五层功能架构 + A2A 多智能体协同 + 分层解耦 + 云原生」响应其对灵活拓展、数据安全、持续竞争力的要求；把核心业务流程转成需求-技术映射文档，定交付标准与验收指标。
+• 落地：与甲方逐项梳理 70+ 功能场景（信息查询/商品推荐/权益引导/外域跳转，分 toC/toB 两大域）；完成投标实质性条款 100% 响应、无合规漏洞，技术方案获甲方评审认可。
+3. 华润沈阳万象城智慧商业项目
+沈阳万象城：公司「7 件套」AI 产品矩阵（客流/停车/物业/智能体/导航/工牌/导视屏）首次在单一商业综合体完整落地，作为解决方案工程师统筹：
+• 智慧客流：新增连逛率看板与日/月报，实现客流实时监控与周期运营分析，支撑精细化运营决策。
+• 智慧停车：联合硬件团队定制改造，评估场景痛点与利旧条件，优化停车调度与体验。
+• AI 导航：设计商业 AR 导航（互动直观）+ 停车 VR 导航（地下室稳定），并定制与智能体集成。
+• AI 智能体：主导需求梳理 + Demo，打造 C 端服务统一入口，整合停车/导航/问询/优惠/会员全链路。
+• AI 智慧屏/物业/工牌：打通线下导视屏实时交互；复用客流摄像头视频流做物业监控；AI 工牌建服务人员-后端问题分析闭环。
+4. 销售 AI 评测系统
+销售 AI 评测系统（面向 20+ 销售团队，已运行 2 个月）：
+• 为什么做：销售讲解能力参差，传统人工评估耗时滞后，缺统一培训标准。
+• 怎么做：基于 Coze 搭评测工作流（飞书多维表收音频 → 大模型按「信息完整度/逻辑清晰度/专业准确度/说服力」4 维度评分 → 生成量化分+知识覆盖对比+差距分析+改进建议），webhook 打通飞书数据流转，配套逾期提醒与自动排名。
+• 效果：推动团队形成规律训练习惯，方案讲解效果与客户答疑准确度提升。
+同济大学建筑设计研究院(集团)有限公司 | 解决方案/产品经理 | 2022.6–2025.7
+1. 企业知识库建设及查询助手
+企业知识库查询助手（建筑行业，0→1）：
+• 为什么做：各专业（管理/设计/校审）知识分散，查规范条文慢、答不准。
+• 怎么做：建「向量+非向量」混合知识系统（文档/图集/表格/图片多模态），引入元标签+知识图谱做关联层；评估多家模型后选通义千问（效果+费用权衡）；用 Prompt 框架（术语约束+场景引导）+ query 重写 + HyDE + 关键词/语义混合检索提召回。
+• 效果：建测试验证体系（环境/指标），上线后持续收 Badcase 迭代（语义分析/切片排序/多轮对话/满意度）。
+2. 校企园区智能客服系统
+园区 Multi-Agent 智能客服（C 端统一入口）：
+• 为什么做：园区运营涉及员工服务/园区运营/招商多场景，原靠人工分散应答，效率低。
+• 怎么做：采用 Multi-Agent 架构——按业务域拆员工服务/园区管理/招商合作等子 Agent，主控 Agent 做意图理解+任务拆解；以 LLM 为决策核心，框架提供全局记忆与工具调用；基于用户画像与上下文做主动式服务。
+• 效果：建「效果/效率/体验」三维评估，Badcase 分级解决语义偏差/覆盖不足/链路异常。
+3. 智慧商业空间数字化解决方案
+智慧商业空间数字化解决方案（全过程服务商）：
+• 为什么做：传统商业管理低效、运营粗犷、服务不足，需更敏捷的管理协同、更精细的运营转化、更优的消费体验。
+• 怎么做：构建「1+4+N」架构（集成空间/运营/物业/可持续 4 大系统，涵盖资产/租户/安防/能源等 14 个应用、60+ 场景）；对工程/设备/能源/泊车/客流/室内导航做软硬件结合方案，对接厂家定设备型号与埋点。
+• 效果：协助甲方建实施建议、联动供应商，推动停车/能源/安防模块落地。
+华建集团 | 项目经理 | 2020.8–2022.4
+统筹大型民用建筑可研/方案/施工图设计，对接业主招商与运营需求，协调内外多方落地。
+教育背景
+同济大学 硕士 建筑设计及其理论（GPA 88.7/100，研究方向数字化空间设计——基于 VR/行为仿真/GIS 数据的空间研判）；本科 建筑学（GPA 88.36）。
+工具能力
+Office、Adobe、Codex、WorkBuddy 等 AI 工具。
+</div>
+<div data-page-node-id="U3KeV1PUg1t2IHK2Zhs3t1" class="wrap">
+
+<header data-page-node-id="AvcJuH1kB3HmawqiFZlvmA" class="top">
+  <div data-page-node-id="3yv2eGB9WnBWoH4MvqMghq">
+    <h1 data-page-node-id="GBw88Tss30ipumUOIY9JDT"><!--pnid:3ZGBSB3tPNTrSosd4uJJrA-->架构师陪跑台</h1>
+    <div data-page-node-id="fHPB2XOBZv6IMIVVny3KLK" class="sub"><span data-page-node-id="JzFj6uOAaBrF9jcFIep0d5" class="badge"><!--pnid:taNR7aB4TAuBN9EFJ6jiXP-->通用行业解决方案架构师</span><span data-page-node-id="TWw5XXNsohnsu4k96ITcIN" class="badge"><!--pnid:jtJfu92IxiuQ1TvRd8ofH9-->火山引擎 · 北京</span><span data-page-node-id="hqRlkjJwHwt3jPY9HJ2Mf3" class="badge g"><!--pnid:6JEOmEeWKKctdIrd4O9baT-->目标 30-60K·18薪</span></div>
+  </div>
+  <div data-page-node-id="21XoesNJik7oHzLZ3N5UWQ" style="text-align:right">
+    <div data-page-node-id="AkdRV79wIjhdcQkuHMIjWq" class="sub" id="todayLabel"></div>
+    <div data-page-node-id="wIcWSZFo5HP00tZgFVpA5g" class="sub" id="syncLabel" style="margin-top:2px"></div>
+    <div data-page-node-id="BKMcO3NypF08Hao8526pFB" class="sub" id="saveHint" style="margin-top:2px; color:var(--green)"></div>
+  </div>
+</header>
+
+<div data-page-node-id="gADzGlrEwlWnGJuM0JKGcy" class="banner hidden" id="banner"></div>
+
+<nav data-page-node-id="vOAU3invfDfdxsRKvZy8PP" class="tabs" id="tabs">
+  <button data-tab="arch">陪跑台架构</button>
+  <button data-tab="jd">JD</button>
+  <button data-tab="main">主线</button>
+  <button data-tab="side">辅线</button>
+  <button data-tab="resume">简历</button>
+  <button data-tab="study">学习档案</button>
+</nav>
+
+<main data-page-node-id="pylvwRfBtNxulA94uNMCkU" id="main"><div data-page-node-id="ETv4tpW37WsN0T3P3goyhH" class="loading"><!--pnid:WS4QNzDCjSHhN9VX4okf6U-->正在从数据库读取…</div></main>
+
+<footer data-page-node-id="XYVfqup1JSUfOHX8aZpNpC"><!--pnid:c6aI7Oy8TeMnwXEYi139On-->数据存放在资料库在线表格，手机与电脑读写同一份，换设备不丢。</footer>
+</div>
+
+<script data-page-node-id="IDWL0IYBJ8EImxvj0yVne5" data-pnid-children="ut620vmrj4IpD34OTz2nhj">
+
+var DB = {
+  cap:   "lmO6iKZKy7pQ0a8tuqxq19",
+  card:  "4zH7GK3VNQaBr9XHCE5sZH",
+  check: "RqgVNlZGB49XuKvLLQ7hvf",
+  ev:    "HwXYvz3bF3Hhw1Z7oxctc2",
+  log:   "D0qAeD4rB0L28FL0e5inQZ",
+  ask:   "kSQ6FwMN7moypXY4RExhee",
+  lvl:   "YI5gA3JiABu5sWTVNUfhee",
+  mat:   "rLcH92l8foVxGRWizDbTJA",
+  qb:    "pQ4o8ka8XxhAaeE3M3JKLm",
+  fb:    "4moVqTqT7JRxYIkKEmvS7b",
+  resume:"X9WGdVETyOPGE4KDMAghP3",
+  jd:    "48W3D38yJk7RKzo5V9pRL3",
+  raw:   "X8FBew1mW66tVKy3Qj6FJu",
+  side:  "KYgCXpyPwSbMWW2eVtrXBz"
+};
+var db = (window.__SMART_PAGE__ && window.__SMART_PAGE__.database) || null;
+var LIVE = !!db;
+
+var S = {caps:[],cards:[],checks:[],logs:[],asks:[],lvls:[],qbs:[],qbOpen:{},qbCat:"",qbStat:"全部",deepOpen:false,mats:[],resume:[],kbOpen:{},jds:[],raws:[],side:[],tab:"main",loaded:false,fbs:[]};
+
+function todayStr(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function dayOf(v){return String(v||"").slice(0,10);}
+function num(v){var n=parseFloat(v);return isNaN(n)?0:n;}
+function ridOf(r){ return (r && (r.record_id || r._id || r.id)) || ""; }
+function fmt(s){ return esc(s||"").replace(/\n/g,"<br>"); }
+function links(s){ if(!s) return ""; var ps=String(s).split(/\s+/).filter(Boolean); return ps.map(function(u){ return '<a href="'+esc(u)+'" target="_blank" style="color:var(--blue)">'+esc(u)+'</a>'; }).join(" "); }
+function flashSaved(){ var h=document.getElementById("saveHint"); if(!h) return; h.textContent="已保存 ✓"; setTimeout(function(){ h.textContent=""; },1800); }
+
+/* ---------- 活跃计时（页面前台可见才计） ---------- */
+var AT = { on:false, sec:0, day:todayStr(), last:Date.now() };
+function atStatus(){ var el=document.getElementById("todayLabel"); if(el) el.textContent="今日学习 "+Math.floor(AT.sec/60)+" 分钟"+(AT.on?" · 计时中":" · 暂停"); }
+function atStart(){ AT.on=true; AT.last=Date.now(); atStatus(); }
+function atStop(){ if(AT.on){ AT.sec += Math.floor((Date.now()-AT.last)/1000); AT.last=Date.now(); AT.on=false; atFlush(); atStatus(); } }
+function atTick(){ if(AT.on){ AT.sec += 1; if(AT.sec % 60 === 0) atFlush(); atStatus(); } }
+function atLoad(){ try{ var v=JSON.parse(localStorage.getItem("at_"+AT.day)||"{}"); if(v.sec) AT.sec=v.sec; }catch(e){} }
+function atSave(){ try{ localStorage.setItem("at_"+AT.day, JSON.stringify({sec:AT.sec})); }catch(e){} }
+function atFlush(){ atSave(); if(!LIVE) return; var mins=Math.floor(AT.sec/60); if(mins<=0) return;
+  var rec=null; S.checks.forEach(function(r){ if(dayOf(r["日期"])===AT.day && (r["任务段"]||"")==="自动计时") rec=r; });
+  if(rec){ db.updateRecord({databaseId:DB.check, recordId:ridOf(rec), properties:{"专注分钟":mins}}); }
+  else { db.addRecord({databaseId:DB.check, properties:{"日期":AT.day,"任务段":"自动计时","任务标题":"页面浏览学习","专注分钟":mins,"建议分钟":0,"达标":false,"状态":"自动"}}); }
+}
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState==="visible" && document.hasFocus()) atStart(); else atStop(); });
+window.addEventListener("focus", atStart);
+window.addEventListener("blur", atStop);
+setInterval(atTick, 1000);
+
+/* ---------- 读取 ---------- */
+function loadAll(id, startCursor, acc, guard){
+  acc = acc || []; guard = guard || 0;
+  if(!LIVE) return Promise.resolve([]);
+  if(guard > 60) return Promise.resolve(acc);
+  return db.query({databaseId:id, pageSize:200, startCursor:startCursor}).then(function(r){
+    acc = acc.concat(r.results || []);
+    var next = r.nextCursor;
+    if(r.hasMore && next && next !== startCursor && (r.results||[]).length) return loadAll(id, next, acc, guard+1);
+    return acc;
+  });
+}
+function refresh(){
+  if(!LIVE){ S.loaded = true; safeRender(); return Promise.resolve(); }
+  return Promise.all([loadAll(DB.cap), loadAll(DB.card), loadAll(DB.check),
+                      loadAll(DB.log), loadAll(DB.ask), loadAll(DB.lvl), loadAll(DB.qb), loadAll(DB.mat), loadAll(DB.fb), loadAll(DB.resume),
+                      loadAll(DB.jd), loadAll(DB.raw), loadAll(DB.side)])
+    .then(function(r){
+      S.caps=r[0]; S.cards=r[1]; S.checks=r[2];
+      S.logs=r[3]; S.asks=r[4]; S.lvls=r[5]; S.qbs=r[6]; S.mats=r[7]; S.fbs=r[8]; S.resume=r[9];
+      S.jds=r[10]; S.raws=r[11]; S.side=r[12];
+      S.cards.sort(function(a,b){return dayOf(a["日期"])<dayOf(b["日期"])?1:-1;});
+      S.side.sort(function(a,b){return dayOf(a["日期"])<dayOf(b["日期"])?1:-1;});
+      S.qbs.sort(function(a,b){return String(a["题号"]||"").localeCompare(String(b["题号"]||""));});
+      S.loaded = true; safeRender();
+    }).catch(function(e){
+      document.getElementById("main").innerHTML = '<div class="card"><b>数据读取失败</b><div class="hint">'+esc(String(e&&e.message||e))+'</div></div>';
+    });
+}
+
+/* ---------- 渲染分发 ---------- */
+function setTabOn(){ document.querySelectorAll("nav.tabs button").forEach(function(b){ b.classList.toggle("on", b.dataset.tab===S.tab); }); }
+function safeRender(){ render(); }
+function render(){
+  if(!S.loaded){ document.getElementById("main").innerHTML='<div class="loading">正在从数据库读取…</div>'; return; }
+  setTabOn();
+  var m=document.getElementById("main");
+  var f=document.getElementById("footer");
+  if(S.tab==="arch") m.innerHTML=viewArch();
+  else if(S.tab==="jd") m.innerHTML=viewJD();
+  else if(S.tab==="main") m.innerHTML=viewMain();
+  else if(S.tab==="side") m.innerHTML=viewSide();
+  else if(S.tab==="resume") m.innerHTML=viewResume();
+  else m.innerHTML=viewStudy();
+  bind();
+  atStatus();
+}
+
+/* ---------- 架构说明页 ---------- */
+function viewArch(){
+  return '<div class="card arch-top"><h2 style="margin:0">陪跑台是什么 · 怎么用</h2>'+
+    '<div class="sub">这是你的个人成长系统。所有数据存在资料库在线表格（手机/电脑同一份），你只通过一个网址使用。</div></div>'+
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 680 840\" width=\"100%\" role=\"img\">\n  <title>陪跑台怎么用：一张图看懂（只有一个入口）</title>\n  <desc>你每天只打开空间页一个网址，在网页里看/传数据或问 AI 教练；数据自动存进飞书14张多维表，聊天自动走 Site 后端；本地文件和旧网页只是制作材料，不是入口。</desc>\n  <defs>\n    <marker id=\"arrow\" viewBox=\"0 0 10 10\" refX=\"8\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\">\n      <path d=\"M2 1L8 5L2 9\" fill=\"none\" stroke=\"context-stroke\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n    </marker>\n  </defs>\n\n  <text x=\"340\" y=\"28\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"500\" fill=\"#042C53\">陪跑台怎么用：一张图看懂（只有一个入口）</text>\n\n  <g>\n    <rect x=\"290\" y=\"44\" width=\"100\" height=\"40\" rx=\"8\" fill=\"#E6F1FB\" stroke=\"#185FA5\" stroke-width=\"0.5\"/>\n    <text x=\"340\" y=\"64\" text-anchor=\"middle\" dominant-baseline=\"central\" font-family=\"sans-serif\" font-size=\"13\" font-weight=\"500\" fill=\"#042C53\">你（徐琛）</text>\n  </g>\n  <line x1=\"340\" y1=\"84\" x2=\"340\" y2=\"104\" stroke=\"#185FA5\" stroke-width=\"1.5\" marker-end=\"url(#arrow)\"/>\n  <text x=\"352\" y=\"98\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#0C447C\">每天只打开这 1 个网址</text>\n\n  <rect x=\"50\" y=\"110\" width=\"580\" height=\"140\" rx=\"20\" fill=\"#E6F1FB\" stroke=\"#185FA5\" stroke-width=\"0.5\"/>\n  <text x=\"72\" y=\"136\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"500\" fill=\"#042C53\">空间页 · 你唯一要记的网址</text>\n  <text x=\"72\" y=\"158\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#0C447C\">workbuddy.cn/space/d/3DxcmFIl7G2SGJjdPXvqH5</text>\n\n  <g>\n    <rect x=\"72\" y=\"176\" width=\"250\" height=\"60\" rx=\"10\" fill=\"#EAF3DE\" stroke=\"#3B6D11\" stroke-width=\"0.5\"/>\n    <text x=\"197\" y=\"198\" text-anchor=\"middle\" dominant-baseline=\"central\" font-family=\"sans-serif\" font-size=\"13\" font-weight=\"500\" fill=\"#173404\">① 看 / 传 / 改：简历·知识·JD</text>\n    <text x=\"197\" y=\"220\" text-anchor=\"middle\" dominant-baseline=\"central\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#27500A\">改动存进飞书表，立刻生效</text>\n  </g>\n  <g>\n    <rect x=\"348\" y=\"176\" width=\"250\" height=\"60\" rx=\"10\" fill=\"#FAEEDA\" stroke=\"#854F0B\" stroke-width=\"0.5\"/>\n    <text x=\"473\" y=\"198\" text-anchor=\"middle\" dominant-baseline=\"central\" font-family=\"sans-serif\" font-size=\"13\" font-weight=\"500\" fill=\"#412402\">② 问 AI 教练（聊天）</text>\n    <text x=\"473\" y=\"220\" text-anchor=\"middle\" dominant-baseline=\"central\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#633806\">聊天框就长在网页里</text>\n  </g>\n\n  <text x=\"340\" y=\"282\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#5F5E5A\">↓ 你在网页里点一下，下面这些系统自动完成 ↓</text>\n  <line x1=\"197\" y1=\"236\" x2=\"197\" y2=\"300\" stroke=\"#5F5E5A\" stroke-width=\"1.2\" stroke-dasharray=\"4 4\" marker-end=\"url(#arrow)\"/>\n  <line x1=\"473\" y1=\"236\" x2=\"473\" y2=\"300\" stroke=\"#5F5E5A\" stroke-width=\"1.2\" stroke-dasharray=\"4 4\" marker-end=\"url(#arrow)\"/>\n\n  <g>\n    <rect x=\"50\" y=\"300\" width=\"280\" height=\"92\" rx=\"12\" fill=\"#EAF3DE\" stroke=\"#3B6D11\" stroke-width=\"0.5\"/>\n    <text x=\"72\" y=\"324\" font-family=\"sans-serif\" font-size=\"13\" font-weight=\"500\" fill=\"#173404\">飞书多维表 ×14</text>\n    <text x=\"72\" y=\"346\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#27500A\">你的数据真实存放处</text>\n    <text x=\"72\" y=\"368\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#27500A\">共 14 张，明细见下方清单</text>\n  </g>\n  <g>\n    <rect x=\"350\" y=\"300\" width=\"280\" height=\"92\" rx=\"12\" fill=\"#FAEEDA\" stroke=\"#854F0B\" stroke-width=\"0.5\"/>\n    <text x=\"372\" y=\"324\" font-family=\"sans-serif\" font-size=\"13\" font-weight=\"500\" fill=\"#412402\">聊天服务器（Site）</text>\n    <text x=\"372\" y=\"346\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#633806\">peipao-tai…/chat.html</text>\n    <text x=\"372\" y=\"368\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#633806\">被网页自动调用，你从不用打开</text>\n  </g>\n\n  <rect x=\"50\" y=\"404\" width=\"580\" height=\"392\" rx=\"12\" fill=\"#F7F9FC\" stroke=\"#5F5E5A\" stroke-width=\"0.5\" stroke-dasharray=\"4 4\"/>\n  <text x=\"72\" y=\"430\" font-family=\"sans-serif\" font-size=\"13\" font-weight=\"500\" fill=\"#2C2C2A\">14 张飞书多维表 · 每张装什么</text>\n  <line x1=\"340\" y1=\"440\" x2=\"340\" y2=\"792\" stroke=\"#DADCE0\" stroke-width=\"1\"/>\n  <line x1=\"62\" y1=\"492\" x2=\"618\" y2=\"492\" stroke=\"#ECEEF2\" stroke-width=\"1\"/>\n  <line x1=\"62\" y1=\"542\" x2=\"618\" y2=\"542\" stroke=\"#ECEEF2\" stroke-width=\"1\"/>\n  <line x1=\"62\" y1=\"592\" x2=\"618\" y2=\"592\" stroke=\"#ECEEF2\" stroke-width=\"1\"/>\n  <line x1=\"62\" y1=\"642\" x2=\"618\" y2=\"642\" stroke=\"#ECEEF2\" stroke-width=\"1\"/>\n  <line x1=\"62\" y1=\"692\" x2=\"618\" y2=\"692\" stroke=\"#ECEEF2\" stroke-width=\"1\"/>\n  <line x1=\"62\" y1=\"742\" x2=\"618\" y2=\"742\" stroke=\"#ECEEF2\" stroke-width=\"1\"/>\n\n  <text x=\"66\" y=\"461\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">能力项</text>\n  <text x=\"66\" y=\"480\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">目标岗位能力字典：能力是什么、达标判据</text>\n  <text x=\"66\" y=\"511\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">知识卡</text>\n  <text x=\"66\" y=\"530\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">主线知识库，按类型分知识/模拟项目/简历包装</text>\n  <text x=\"66\" y=\"561\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">面试题库</text>\n  <text x=\"66\" y=\"580\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">面试题＋你的作答与参考答案</text>\n  <text x=\"66\" y=\"611\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">素材库</text>\n  <text x=\"66\" y=\"630\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">你投喂的 JD/资料/产品文档等参考</text>\n  <text x=\"66\" y=\"661\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">岗位JD</text>\n  <text x=\"66\" y=\"680\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">目标岗位 JD，驱动对标与简历优化</text>\n  <text x=\"66\" y=\"711\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">原始简历</text>\n  <text x=\"66\" y=\"730\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">你当前最新简历原文（简历页左栏）</text>\n  <text x=\"66\" y=\"761\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">辅线知识库</text>\n  <text x=\"66\" y=\"780\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">AI 动向/知识/产品/技术随手记</text>\n\n  <text x=\"352\" y=\"461\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">打卡</text>\n  <text x=\"352\" y=\"480\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">学习打卡/前台活跃计时，按天记时长</text>\n  <text x=\"352\" y=\"511\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">学习记录</text>\n  <text x=\"352\" y=\"530\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">学习行为流水：学了什么、时长</text>\n  <text x=\"352\" y=\"561\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">能力证据</text>\n  <text x=\"352\" y=\"580\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">你的练习/产出作为某能力的证据</text>\n  <text x=\"352\" y=\"611\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">问答</text>\n  <text x=\"352\" y=\"630\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">你向 AI 教练的提问与答复记录</text>\n  <text x=\"352\" y=\"661\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">等级日志</text>\n  <text x=\"352\" y=\"680\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">能力等级变化日志（升级记录）</text>\n  <text x=\"352\" y=\"711\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">简历优化</text>\n  <text x=\"352\" y=\"730\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">AI 逐段优化后的简历版本</text>\n  <text x=\"352\" y=\"761\" font-family=\"sans-serif\" font-size=\"12.5\" font-weight=\"600\" fill=\"#042C53\">任务反馈</text>\n  <text x=\"352\" y=\"780\" font-family=\"sans-serif\" font-size=\"11\" fill=\"#5F5E5A\">练习任务与教练反馈</text>\n\n  <text x=\"50\" y=\"820\" font-family=\"sans-serif\" font-size=\"12\" fill=\"#5F5E5A\">实线＝你操作　·　虚线＝系统自动　·　本地文件/旧网页＝制作材料，不是入口</text>\n</svg>\n" +
+    '<div class="grid g3" style="margin-top:12px">'+
+      '<div class="card"><h3 style="margin:0">① 主线</h3><div class="sub">围绕你的目标岗位：模拟项目、岗位知识、面试题、简历包装。你在这上传，AI 帮你按岗位打磨。</div></div>'+
+      '<div class="card"><h3 style="margin:0">② 辅线</h3><div class="sub">AI 行业动向 / 知识 / 产品 / 技术。随手记，拓宽视野。</div></div>'+
+      '<div class="card"><h3 style="margin:0">③ 简历</h3><div class="sub">上传简历，AI 逐段优化并给建议，左看最新版、右看优化点。</div></div>'+
+    '</div>'+
+    '<div class="card"><h3 style="margin:0">④ 学习档案</h3><div class="sub">系统自动记录你浏览本页面的时长（仅当前台可见才计时），呈现日历、累计学习分钟、知识数、核心概念数、能力等级变化。</div></div>'+
+    '<div class="card"><h3 style="margin:0">怎么运转</h3><div class="sub">空间页=你唯一入口（数据读写）。AI 聊天的后端挂在 Site，被空间页内嵌调用，你不用单独打开。本地文件、旧网页只是制作材料，不是入口。</div></div>';
+}
+
+/* ---------- 主线 ---------- */
+function viewMain(){
+  var jd = S.jds[0];
+  var jdCard = jd ? ('<div class="card" style="border-color:var(--blue)"><div class="row-between"><b>🎯 当前目标岗位</b>'+
+      (jd["链接"]&&jd["链接"].link?'<a class="btn sm ghost" href="'+esc(jd["链接"].link)+'" target="_blank">JD 链接</a>':'')+'</div>'+
+      '<div class="sub" style="margin-top:6px"><span class="tag blue">'+esc(jd["公司"]||"")+'</span> '+esc(jd["岗位"]||"")+(jd["关联能力域"]?' · '+esc(jd["关联能力域"]):'')+'</div>'+
+      (jd["JD原文"]?'<div class="blk" style="margin-top:8px;max-height:180px;overflow:auto">'+esc(jd["JD原文"])+'</div>':'<div class="sub">（未填 JD 原文）</div>')):'<div class="card"><b>🎯 目标岗位</b><div class="sub">还没设定。去「简历」页录入岗位 JD，主线就围绕它展开。</div></div>';
+
+  var upForm = '<div class="card" style="border-color:var(--blue);box-shadow:0 1px 0 var(--blueL)"><h2 style="margin:0">📥 上传到主线知识库</h2>'+
+    '<div class="sub">登记一个知识 / 模拟项目 / 简历包装素材（围绕目标岗位）。AI 后续可据此出题、优化简历。</div>'+
+    '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px">'+
+      '<input id="cTitle" placeholder="标题（必填）" style="flex:1;min-width:160px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px">'+
+      '<select id="cType" style="width:150px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px">'+
+        '<option>知识</option><option>模拟项目</option><option>简历包装</option></select>'+
+    '</div>'+
+    '<div style="margin-top:8px"><textarea id="cCore" rows="2" placeholder="核心概念（选填，一段精要）" style="width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px"></textarea></div>'+
+    '<div style="margin-top:8px"><textarea id="cDeep" rows="3" placeholder="深度资料 / 你的项目落地（选填）" style="width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px"></textarea></div>'+
+    '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px">'+
+      '<input id="cUrl" placeholder="链接（选填）" style="flex:1;min-width:160px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px">'+
+      '<input id="cDom" placeholder="能力域（多个用逗号分隔）" style="width:160px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px">'+
+    '</div>'+
+    '<div style="margin-top:8px"><button class="btn sm" data-act="cardAdd">入库</button><span class="hint" style="margin-left:8px" id="cMsg"></span></div></div>';
+
+  var filters = ['全部','知识','模拟项目','简历包装'];
+  var fhtml = '<div class="sub" style="margin:10px 0 4px">按类型筛选：'+filters.map(function(f){ return '<span class="tag'+(S.mFilter===f?' on':'')+'" data-act="mFilter" data-f="'+esc(f)+'">'+esc(f)+'</span>'; }).join(' ')+'</div>';
+
+  var list = S.cards.slice();
+  if(S.mFilter && S.mFilter!=="全部") list = list.filter(function(c){ return (c["类型"]||"知识")===S.mFilter; });
+  var cardsHtml = list.map(function(c){
+    var t=(c["类型"]||"知识");
+    var body = (c["核心概念"]?'<div class="sec"><span class="sh">核心概念</span><div class="blk">'+fmt(c["核心概念"])+'</div></div>':'')+
+               (c["深度资料"]?'<div class="sec"><span class="sh t">深度资料</span><div class="blk">'+fmt(c["深度资料"])+'</div></div>':'')+
+               (c["对标产品"]?'<div class="sec"><span class="sh a">对标产品</span><div class="blk">'+fmt(c["对标产品"])+'</div></div>':'')+
+               (c["落到你的项目"]?'<div class="sec"><span class="sh g">落到你的项目</span><div class="blk">'+fmt(c["落到你的项目"])+'</div></div>':'')+
+               (c["延伸阅读"]?'<div class="sec"><span class="sh">延伸阅读</span>'+links(c["延伸阅读"])+'</div>':'');
+    return '<div class="wfc" data-act="kbExpand" data-rid="'+esc(ridOf(c))+'"><div class="wt">'+esc(c["标题"]||"（无标题）")+'</div>'+
+      '<div class="wm"><span class="tag">'+esc(t)+'</span>'+(c["能力域"]?(Array.isArray(c["能力域"])?c["能力域"]:[c["能力域"]]).map(function(d){return '<span class="tag">'+esc(d)+'</span>';}).join(''):'')+'<span class="chev">▾</span></div>'+
+      '<div class="wb">'+(body||'<div class="sub">（暂无内容）</div>')+'</div></div>';
+  }).join("");
+  if(!list.length) cardsHtml='<div class="card"><div class="sub">该类型还没有内容。用上方表单上传第一条'+(S.mFilter&&S.mFilter!=="全部"?"（"+esc(S.mFilter)+"）":"")+'。</div></div>';
+
+  var qbHtml = S.qbs.length ? ('<div class="card"><h2 style="margin:0">面试题（'+S.qbs.length+' 道）</h2><div class="sub">由 AI 出题，按岗位考察点准备。</div></div>'+S.qbs.slice(0,12).map(function(r){
+    var body='<div class="sec"><span class="sh">考察点</span><div class="blk">'+fmt(r["考察点"])+'</div></div>'+
+             '<div class="sec"><span class="sh t">答题框架</span><div class="blk">'+fmt(r["答题框架"])+'</div></div>'+
+             (r["你的素材"]?'<div class="sec"><span class="sh a">你的素材</span><div class="blk">'+fmt(r["你的素材"])+'</div></div>':'');
+    return '<div class="wfc" data-act="kbExpand" data-rid="'+esc(ridOf(r))+'"><div class="wt">'+esc((r["题号"]||"")+" "+(r["题目"]||""))+'</div>'+
+      '<div class="wm"><span class="tag teal">面试题</span>'+(r["类别"]?'<span class="tag">'+esc(r["类别"])+'</span>':'')+'<span class="chev">▾</span></div>'+
+      '<div class="wb">'+(body||'<div class="sub">（暂无内容）</div>')+'</div></div>';
+  }).join("")) : '';
+
+  var matHtml = S.mats.length ? ('<div class="card"><h2 style="margin:0">素材投喂（'+S.mats.length+' 条）</h2><div class="sub">你投喂的原始资料，是知识卡 / 面试题的引用来源。</div></div>'+S.mats.slice().sort(function(a,b){return dayOf(b["入库日期"])<dayOf(a["入库日期"])?-1:1;}).slice(0,20).map(function(r){
+    var link=r["链接"]||{}; var lh=link.link||"";
+    return '<div class="row-between" style="padding:8px 0;border-bottom:1px solid var(--line)"><div style="flex:1;min-width:0"><span class="tag blue">'+esc(r["类型"]||"")+'</span> '+esc(r["标题"]||"")+(lh?' <a href="'+esc(lh||"#")+'" target="_blank" style="color:var(--blue)">🔗</a>':'')+'<div class="sub" style="font-size:11px;margin-top:2px">'+esc(dayOf(r["入库日期"]))+'</div></div></div>';
+  }).join("")) : '';
+
+  return jdCard + upForm + '<div class="card"><h2 style="margin:0">主线知识库（'+S.cards.length+' 条）</h2><div class="sub">知识 / 模拟项目 / 简历包装，围绕目标岗位沉淀。</div></div>'+fhtml+'<div class="wf">'+cardsHtml+'</div>'+qbHtml+matHtml;
+}
+
+/* ---------- 辅线 ---------- */
+function viewSide(){
+  var upForm = '<div class="card" style="border-color:var(--amber);box-shadow:0 1px 0 var(--amberL)"><h2 style="margin:0">📥 记录一条 AI 动向 / 知识</h2>'+
+    '<div class="sub">AI 行业、产品、技术、方法论——随手记，拓宽视野。</div>'+
+    '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px">'+
+      '<input id="sTitle" placeholder="标题（必填）" style="flex:1;min-width:160px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px">'+
+      '<select id="sCat" style="width:150px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px">'+
+        '<option>动向</option><option>知识</option><option>产品</option><option>技术</option><option>其他</option></select>'+
+    '</div>'+
+    '<div style="margin-top:8px"><textarea id="sCore" rows="2" placeholder="核心概念（选填）" style="width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px"></textarea></div>'+
+    '<div style="margin-top:8px"><textarea id="sDeep" rows="3" placeholder="深度资料（选填）" style="width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px"></textarea></div>'+
+    '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px">'+
+      '<input id="sUrl" placeholder="链接（选填）" style="flex:1;min-width:160px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px">'+
+    '</div>'+
+    '<div style="margin-top:8px"><button class="btn sm" data-act="sideAdd">入库</button><span class="hint" style="margin-left:8px" id="sMsg"></span></div></div>';
+
+  var cardsHtml = S.side.map(function(c){
+    var body=(c["核心概念"]?'<div class="sec"><span class="sh">核心概念</span><div class="blk">'+fmt(c["核心概念"])+'</div></div>':'')+
+               (c["深度资料"]?'<div class="sec"><span class="sh t">深度资料</span><div class="blk">'+fmt(c["深度资料"])+'</div></div>':'')+
+               (c["链接"]&&c["链接"].link?'<div class="sec"><span class="sh a">链接</span><div class="blk"><a href="'+esc(c["链接"].link)+'" target="_blank" style="color:var(--blue)">'+esc(c["链接"].link)+'</a></div></div>':'');
+    return '<div class="wfc" data-act="kbExpand" data-rid="'+esc(ridOf(c))+'"><div class="wt">'+esc(c["标题"]||"（无标题）")+'</div>'+
+      '<div class="wm"><span class="tag amber">'+esc(c["分类"]||"其他")+'</span><span class="chev">▾</span></div>'+
+      '<div class="wb">'+(body||'<div class="sub">（暂无内容）</div>')+'</div></div>';
+  }).join("");
+  if(!S.side.length) cardsHtml='<div class="card"><div class="sub">还没有辅线内容。看到值得记的 AI 动向 / 知识，用上方表单记一条。</div></div>';
+
+  return upForm + '<div class="card"><h2 style="margin:0">辅线知识库（'+S.side.length+' 条）</h2><div class="sub">AI 行业 / 产品 / 技术 / 方法论，随手积累。</div></div><div class="wf">'+cardsHtml+'</div>';
+}
+
+/* ---------- 简历（两栏） ---------- */
+function fullResumeCard(){
+  var rec=null;
+  for(var i=0;i<S.resume.length;i++){ if((S.resume[i]["区块"]||"").indexOf("优化版全文")>=0){ rec=S.resume[i]; break; } }
+  if(!rec){
+    var st=document.getElementById("resumeStatic"); var txt=st?st.textContent:"";
+    if(!txt) return '<div class="card"><div class="sub">还没有简历。点上方「上传简历」投喂第一份。</div></div>';
+    return '<div class="card" style="border-color:var(--blue)"><div class="row-between"><h2 style="margin:0">📄 我的简历（优化版 · 只读快照）</h2>'+
+      '<a class="btn sm ghost" href="https://www.workbuddy.cn/space/d/3DxcmFIl7G2SGJjdPXvqH5" target="_blank">到空间页更新</a></div>'+
+      '<div class="blk" style="margin-top:8px;white-space:pre-wrap;max-height:520px;overflow:auto;font-size:13px;line-height:1.6">'+esc(txt)+'</div></div>';
+  }
+  return '<div class="card" style="border-color:var(--blue)"><div class="row-between"><h2 style="margin:0">📄 我的简历（优化版）</h2>'+
+    '<button class="btn sm ghost" data-act="copyResume">复制全文</button></div>'+
+    '<div class="blk" style="margin-top:8px;white-space:pre-wrap;max-height:520px;overflow:auto;font-size:13px;line-height:1.6">'+esc(rec["优化后"]||"")+'</div></div>';
+}
+function copyText(t){ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ flashSaved(); }, function(){ fbCopy(t); }); } else { fbCopy(t); } }
+function fbCopy(t){ var ta=document.createElement("textarea"); ta.value=t; ta.style.position="fixed"; ta.style.left="-9999px"; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); flashSaved(); }catch(e){ alert("复制失败，请手动选择文字复制"); } document.body.removeChild(ta); }
+function openUpload(){ var m=document.getElementById("uploadMask"); if(m) m.classList.remove("hidden"); }
+function closeUpload(){ var m=document.getElementById("uploadMask"); if(m) m.classList.add("hidden"); }
+function viewResume(){
+  if(!LIVE){
+    return '<div class="robanner" style="padding:14px 16px;font-size:13.5px;line-height:1.7"><b>⚠️ 当前是只读预览，不能上传 / 保存。</b><br>请在 WorkBuddy 资料库里打开「陪跑台-数据版」节点（或下方按钮在已登录浏览器新标签打开）上传并永久保存：<br>'+
+      '<a class="robtn" href="https://www.workbuddy.cn/space/d/3DxcmFIl7G2SGJjdPXvqH5" target="_blank" style="margin-top:10px">↗ 在资料库打开可写版</a></div>'+fullResumeCard();
+  }
+  var uploadBtn='<button class="btn" data-act="openUpload" style="width:100%;padding:10px;font-size:13.5px">📥 上传简历</button>'+
+    '<div class="sub" style="margin-top:6px;margin-bottom:12px">支持 PDF / Word / TXT，或粘贴文字。点上方按钮在弹窗填写。</div>';
+
+  var segs = S.resume.filter(function(r){ return (r["区块"]||"").indexOf("优化版全文")<0; });
+  var optHead='<div class="card"><h2 style="margin:0">简历优化建议（'+segs.length+' 段）</h2><div class="sub">每段「原始 → 优化后 → 为什么 → 面试增益」。</div></div>';
+  var cards=segs.map(function(r){
+    var sec=function(t,c){ return c?('<div class="sec"><span class="sh">'+t+'</span><div class="blk">'+fmt(c)+'</div></div>'):''; };
+    return '<div class="card" style="border-color:var(--blue)"><h2 style="margin:0">'+esc(r["区块"]||"简历优化")+'</h2>'+
+      sec("原始简历",r["原始简历"])+sec("优化后",r["优化后"])+sec("优化点",r["优化点"])+
+      sec("背后知识（为什么这么改）",r["背后知识（为什么这么改）"])+sec("面试视角增益",r["面试视角增益"])+sec("关联能力域",r["关联能力域"])+
+      (r["状态"]?'<div class="sub" style="margin-top:6px">状态：'+esc(r["状态"])+'</div>':'')+'</div>';
+  }).join("");
+  if(!segs.length) cards='<div class="card"><div class="sub">还没有优化对照。上传简历后，让 AI 逐段优化即可生成。</div></div>';
+
+  var modal='<div class="modal-mask hidden" id="uploadMask" data-act="closeUpload"><div class="modal"><div class="modal-head"><b>📥 上传简历</b><button class="modal-close" data-act="closeUpload" aria-label="关闭">×</button></div>'+
+    '<div class="modal-body"><div class="xsec"><h3>上传你的简历</h3>'+
+      '<div style="margin-top:8px"><input id="rawFile" type="file" accept=".pdf,.doc,.docx,.txt" style="font-size:13px"> <span class="hint">PDF/Word 自动提取文字</span></div>'+
+      '<div style="margin-top:8px"><textarea id="rawText" rows="4" placeholder="或在此粘贴简历全文" style="width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px"></textarea></div>'+
+      '<div style="margin-top:8px"><button class="btn sm" data-act="rawAdd">提交并收录</button><span class="hint" style="margin-left:8px" id="rawMsg"></span></div></div></div></div></div>';
+
+  return uploadBtn +
+    '<div class="r2col"><div class="col">'+fullResumeCard()+'</div>'+
+    '<div class="col">'+optHead+cards+'</div></div>' + modal;
+}
+
+/* ---------- JD 知识库 ---------- */
+function viewJD(){
+  if(!LIVE){
+    return '<div class="robanner" style="padding:14px 16px;font-size:13.5px;line-height:1.7"><b>⚠️ 当前是只读预览，不能上传 / 保存。</b><br>请在 WorkBuddy 资料库里打开「陪跑台-数据版」节点上传并永久保存：<br>'+
+      '<a class="robtn" href="https://www.workbuddy.cn/space/d/3DxcmFIl7G2SGJjdPXvqH5" target="_blank" style="margin-top:10px">↗ 在资料库打开可写版</a></div>';
+  }
+  var boss='<div class="card" style="border-color:var(--green)"><h2 style="margin:0">📸 BOSS 直聘截图 → 自动识别入库</h2>'+
+    '<div class="sub">点下方按钮打开「AI 教练」新窗口，在那里上传 BOSS 直聘 JD 截图；识别完成后会自动回填到本页下方表格（公司 / 岗位 / 核心要求 / 关联能力域）。</div>'+
+    '<div style="margin-top:8px"><button class="btn sm" data-act="bossExtract">打开 AI 教练识别 BOSS 截图</button><span class="hint" style="margin-left:8px" id="bossMsg"></span></div></div>';
+
+  var manual='<div class="card"><h2 style="margin:0">✏️ 手动录入 JD</h2>'+
+    '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px"><input id="jdCo" placeholder="公司（必填）" style="flex:1;min-width:140px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px"><input id="jdPos" placeholder="岗位（必填）" style="flex:1;min-width:140px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px"></div>'+
+    '<div style="margin-top:8px"><textarea id="jdText" rows="3" placeholder="JD 原文 / 核心要求" style="width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px"></textarea></div>'+
+    '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px"><input id="jdUrl" placeholder="JD 链接（选填）" style="flex:1;min-width:160px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px"><input id="jdDom" placeholder="关联能力域（选填）" style="width:160px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fcfcfa;color:var(--tx);font-size:13px"></div>'+
+    '<div style="margin-top:8px"><button class="btn sm" data-act="jdAdd">入库</button><span class="hint" style="margin-left:8px" id="jdMsg"></span></div></div>';
+
+  var table = (!S.jds.length) ? '<div class="card"><div class="sub">还没有 JD。上传 BOSS 截图或手动录入后，会显示在这里。</div></div>' :
+    '<div class="card"><h2 style="margin:0">💼 已存 JD（'+S.jds.length+' 条）</h2>'+
+    '<div style="margin-top:8px;overflow-x:auto"><table class="jdtable"><thead><tr><th>公司</th><th>岗位</th><th>核心要求</th><th>关联能力域</th><th>状态</th><th>入库日期</th></tr></thead><tbody>'+
+    S.jds.slice().sort(function(a,b){return dayOf(b["入库日期"])<dayOf(a["入库日期"])?-1:1;}).map(function(r){
+      return '<tr><td>'+esc(r["公司"]||"")+'</td><td>'+esc(r["岗位"]||"")+'</td><td class="jdreq">'+esc((r["JD原文"]||"").slice(0,140))+((r["JD原文"]||"").length>140?'…':'')+'</td><td>'+(r["关联能力域"]?esc(r["关联能力域"]):'')+'</td><td>'+esc(r["状态"]||"")+'</td><td>'+esc(dayOf(r["入库日期"]))+'</td></tr>';
+    }).join("")+
+    '</tbody></table></div></div>';
+
+  return boss + manual + table;
+}
+function bossExtract(){
+  var msg=document.getElementById("bossMsg");
+  if(!LIVE){ if(msg) msg.textContent="只读环境不能保存"; return; }
+  // 平台 CSP(frame-src) 禁止内嵌 app.workbuddy.host，故改为在新窗口的 AI 教练里上传识别
+  window.open(COACH_URL, "_blank");
+  if(msg) msg.textContent="已打开 AI 教练新窗口 → 在那里点「识别 BOSS 截图」上传图片，识别完成会自动回填入库。";
+}
+window.addEventListener("message", function(e){
+  try{
+    if(e.data && e.data.type==="jd-ready"){
+      window.__jdReady=true;
+      if(window.__jdPending){ var p=window.__jdPending; window.__jdPending=null; var fr=document.getElementById("jdFrame"); if(fr && fr.contentWindow){ try{ fr.contentWindow.postMessage({type:"jd-extract", image:p}, "*"); }catch(err){} } }
+      return;
+    }
+    if(e.data && e.data.type==="jd-status"){
+      if(window.__jdTimer) clearTimeout(window.__jdTimer);
+      var ms=document.getElementById("bossMsg");
+      if(ms){
+        if(e.data.ok){
+          var mm=(e.data.message||"识别中…");
+          ms.textContent = (mm.indexOf("入库")>=0) ? "已识别并入库 ✓" : mm;
+        } else {
+          ms.textContent = "⚠️ "+(e.data.message||"识别失败，请手动录入");
+        }
+      }
+      return;
+    }
+    if(e.data && e.data.type==="jd-result"){
+      if(window.__jdTimer) clearTimeout(window.__jdTimer);
+      var jd=e.data.jd||{};
+      var props={"公司":(jd.公司||"").trim(),"岗位":(jd.岗位||"").trim(),"JD原文":(jd.核心要求||"").trim(),"状态":"已收录"};
+      var dom=jd.关联能力域;
+      if(dom && dom.length){ props["关联能力域"] = (Array.isArray(dom)?dom.join("、"):String(dom)); }
+      if(!LIVE) return;
+      db.addRecord({databaseId:DB.jd, properties:props}).then(function(){ var m=document.getElementById("bossMsg"); if(m) m.textContent="已识别并入库 ✓"; refresh(); }).catch(function(){ var m=document.getElementById("bossMsg"); if(m) m.textContent="入库失败，请重试或手动录入"; });
+    }
+  }catch(err){}
+});
+
+/* ---------- 学习档案 ---------- */
+function capMini(){
+  var doms=domains(); if(!doms.length) return '';
+  var grid=doms.map(function(d){
+    var cur=0,tg=0; d.items.forEach(function(c){ cur+=num(c["当前等级"]); tg+=num(c["目标等级"]); });
+    var n=d.items.length||1, ratio=tg?Math.min(1,(cur/n)/(tg/n)):0;
+    var cls=ratio>=0.95?"teal":(ratio>=0.6?"amber":"red");
+    var items=d.items.map(function(c){ return '<span class="tag">'+esc(c["能力项"]||"")+' <b>'+num(c["当前等级"])+'/'+num(c["目标等级"])+'</b></span>'; }).join(" ");
+    return '<div class="card"><div class="row-between" style="margin-bottom:6px"><b>'+esc(d.name)+'</b><span class="sub">'+(cur/n).toFixed(2)+' / '+(tg/n).toFixed(2)+'</span></div>'+
+      '<div class="bar '+cls+'" style="margin-bottom:8px"><i style="width:'+Math.round(ratio*100)+'%"></i></div><div style="display:flex;flex-wrap:wrap;gap:5px">'+items+'</div></div>';
+  }).join("");
+  return '<div class="card"><h2 style="margin:0">能力地图（精简）</h2><div class="sub">按能力域归并，展示当前 / 目标等级。</div></div>'+grid;
+}
+function domains(){ var m={}; S.caps.forEach(function(c){ var d=c["能力域"]||"其他"; (m[d]=m[d]||{name:d,items:[]}).items.push(c); }); return Object.keys(m).map(function(k){return m[k];}); }
+function viewStudy(){
+  var totalMin=0; S.checks.forEach(function(r){ totalMin+=num(r["专注分钟"]); });
+  totalMin += Math.floor(AT.sec/60);
+  var coreN = S.cards.filter(function(c){ return (c["核心概念"]||"").trim(); }).length;
+  var knowN = S.cards.length + S.side.length;
+  var lvN = S.lvls.length;
+  // 日历：最近 35 天
+  var byDay={}; S.checks.forEach(function(r){ var d=dayOf(r["日期"]); byDay[d]=(byDay[d]||0)+num(r["专注分钟"]); });
+  var dt=new Date(); dt.setDate(dt.getDate()-34); var cells="";
+  for(var i=0;i<35;i++){ var k=dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
+    var v=Math.round(byDay[k]||0); cells+='<div class="cal'+(v?' on':'')+'" title="'+k+' · '+v+' 分钟">'+(dt.getDate())+'</div>'; dt.setDate(dt.getDate()+1); }
+  // 近14天
+  var byDay2={}; S.checks.forEach(function(r){ var d=dayOf(r["日期"]); byDay2[d]=(byDay2[d]||0)+num(r["专注分钟"]); });
+  var dt2=new Date(); dt2.setDate(dt2.getDate()-13); var days=[],maxV=1;
+  for(var x=0;x<14;x++){ var k2=dt2.getFullYear()+"-"+String(dt2.getMonth()+1).padStart(2,"0")+"-"+String(dt2.getDate()).padStart(2,"0"); var v2=Math.round(byDay2[k2]||0); days.push({k:k2,v:v2}); if(v2>maxV)maxV=v2; dt2.setDate(dt2.getDate()+1); }
+  var bars=days.map(function(d){ return '<div class="b '+(d.v?'':'zero')+'" style="height:'+Math.max(2,Math.round(d.v/maxV*78))+'px" title="'+d.k+' · '+d.v+' 分钟"></div>'; }).join("");
+  var barLbl='<div class="bx">'+days.map(function(d,i){ return '<div style="flex:1;text-align:center;overflow:hidden">'+(i%3===0||i===13?String(d.k).slice(5):"")+'</div>'; }).join("")+'</div>';
+  var lvList=S.lvls.slice(0,10).map(function(r){ var up=num(r["新等级"])>num(r["旧等级"]); return '<div class="row-between" style="padding:7px 0;border-bottom:1px solid var(--line)"><div><span class="tag blue">'+esc(r["能力项ID"]||"")+'</span> '+esc(r["能力项"]||"")+'<div class="sub" style="font-size:11px;margin-top:2px">'+esc(dayOf(r["日期"]))+'</div></div><span class="tag '+(up?'ok':'bad')+'">'+num(r["旧等级"])+' → '+num(r["新等级"])+'</span></div>'; }).join("")||'<div class="sub">还没有等级变化。</div>';
+  var logList=S.logs.slice(0,12).map(function(r){ return '<div style="padding:9px 0;border-bottom:1px solid var(--line)"><div class="row-between"><div><span class="tag blue">'+esc(r["任务段"]||"")+'</span> '+esc(r["任务标题"]||"")+'<div class="sub" style="font-size:11px;margin-top:2px">'+esc(dayOf(r["日期"]))+'</div></div><span class="tag '+(r["达标"]?'ok':'warn')+'">'+num(r["专注分钟"])+' 分钟</span></div>'+(r["我的产出"]?'<div class="hint" style="margin-top:6px">产出：'+esc(r["我的产出"])+'</div>':'')+(r["AI总结"]?'<div class="hint" style="margin-top:4px;color:var(--teal)">教练总结：'+esc(r["AI总结"])+'</div>':'')+'</div>'; }).join("")||'<div class="sub">还没有学习记录。</div>';
+  return '<div class="card" style="border-color:var(--green)"><div class="row-between"><b>⏱ 学习计时</b><span class="tag '+(AT.on?'ok':'')+'">'+(AT.on?'● 计时中（页面在前台）':'○ 暂停')+'</span></div>'+
+    '<div class="sub" style="margin-top:6px">系统在你打开本页面且置于前台时自动累加学习分钟；切到后台或最小化不计时。数据实时写入打卡表。</div></div>'+
+    '<div class="grid g4" style="margin:12px 0"><div class="kpi"><div class="n">'+Math.floor(totalMin)+'</div><div class="l">累计学习（分钟）</div></div>'+
+      '<div class="kpi"><div class="n">'+(AT.on?'进行中':Math.floor(AT.sec/60))+'</div><div class="l">今日（分钟）</div></div>'+
+      '<div class="kpi"><div class="n">'+knowN+'</div><div class="l">知识数（主+辅）</div></div>'+
+      '<div class="kpi"><div class="n">'+coreN+'</div><div class="l">核心概念数</div></div></div>'+
+    '<div class="card"><h2>近 35 天打卡日历</h2><div class="calgrid">'+cells+'</div><div class="sub" style="margin-top:6px">高亮 = 当天有学习记录</div></div>'+
+    '<div class="card"><h2>近 14 天专注时长</h2><div class="bars">'+bars+'</div>'+barLbl+'</div>'+
+    '<div class="card"><h2>能力等级变化（'+lvN+' 次）</h2>'+lvList+'</div>'+
+    '<div class="card"><h2>学习记录（最近 12 条）</h2>'+logList+'</div>'+
+    capMini();
+}
+
+/* ---------- 事件 ---------- */
+function bind(){
+  document.querySelectorAll("[data-act]").forEach(function(el){
+    var a=el.dataset.act;
+    if(a==="kbExpand"){ el.onclick=function(){ var rid=el.dataset.rid; S.kbOpen[rid]=!S.kbOpen[rid]; var wb=el.querySelector(".wb"); if(wb) wb.classList.toggle("open"); }; }
+    else if(a==="mFilter"){ el.onclick=function(){ S.mFilter=el.dataset.f; render(); }; }
+    else if(a==="copyResume"){ el.onclick=function(){ var rec=null; for(var i=0;i<S.resume.length;i++){ if((S.resume[i]["区块"]||"").indexOf("优化版全文")>=0){ rec=S.resume[i]; break; } } if(rec) copyText(rec["优化后"]||""); }; }
+    else if(a==="openUpload"){ el.onclick=openUpload; }
+    else if(a==="closeUpload"){ el.onclick=function(e){ if(e.target===el) closeUpload(); }; }
+    else if(a==="rawAdd"){ el.onclick=rawAdd; }
+    else if(a==="jdAdd"){ el.onclick=jdAdd; }
+    else if(a==="bossExtract"){ el.onclick=bossExtract; }
+    else if(a==="cardAdd"){ el.onclick=cardAdd; }
+    else if(a==="sideAdd"){ el.onclick=sideAdd; }
+  });
+  document.querySelectorAll("nav.tabs button").forEach(function(b){ b.onclick=function(){ document.querySelectorAll("nav.tabs button").forEach(function(x){ x.classList.remove("on"); }); b.classList.add("on"); S.tab=b.dataset.tab; render(); }; });
+}
+function rawAdd(){
+  var f=document.getElementById("rawFile"), t=document.getElementById("rawText"), msg=document.getElementById("rawMsg");
+  var txt=t?t.value.trim():"";
+  if(f && f.files && f.files[0]){ /* PDF/Word 提取简化：交给 AI 处理，这里存文件链接逻辑省略，提示用户粘贴 */ msg.textContent="PDF/Word 提取请在 AI 对话中说「读取并优化我的简历」"; return; }
+  if(!txt){ msg.textContent="请粘贴简历文字，或在 AI 对话中上传文件"; return; }
+  if(!LIVE){ msg.textContent="只读环境不能保存"; return; }
+  db.addRecord({databaseId:DB.raw, properties:{"内容":txt,"版本":"简历","状态":"待优化"}}).then(function(){ S.raws.push({"内容":txt}); msg.textContent="已收录，去 AI 对话说「优化我的简历」"; closeUpload(); refresh(); });
+}
+function jdAdd(){
+  var co=document.getElementById("jdCo"), pos=document.getElementById("jdPos"), tx=document.getElementById("jdText"), url=document.getElementById("jdUrl"), dom=document.getElementById("jdDom"), msg=document.getElementById("jdMsg");
+  if(!co.value.trim()||!pos.value.trim()){ msg.textContent="公司和岗位必填"; return; }
+  if(!LIVE){ msg.textContent="只读环境不能保存"; return; }
+  var props={"公司":co.value.trim(),"岗位":pos.value.trim(),"JD原文":tx.value.trim(),"关联能力域":dom.value.trim(),"状态":"已收录"};
+  if(url.value.trim()) props["链接"]={link:url.value.trim()};
+  db.addRecord({databaseId:DB.jd, properties:props}).then(function(){ msg.textContent="已录入"; closeUpload(); refresh(); });
+}
+function cardAdd(){
+  var ti=document.getElementById("cTitle"), ty=document.getElementById("cType"), co=document.getElementById("cCore"), de=document.getElementById("cDeep"), ur=document.getElementById("cUrl"), dm=document.getElementById("cDom"), msg=document.getElementById("cMsg");
+  if(!ti.value.trim()){ msg.textContent="标题必填"; return; }
+  if(!LIVE){ msg.textContent="只读环境不能保存"; return; }
+  var props={"标题":ti.value.trim(),"类型":ty.value,"核心概念":co.value.trim(),"深度资料":de.value.trim(),"日期":todayStr(),"状态":"未读"};
+  var domArr = dm.value.trim() ? dm.value.trim().split(/[，,、;；/]/).map(function(s){return s.trim();}).filter(Boolean) : [];
+  if(domArr.length) props["能力域"]={"multi_select":domArr};
+  if(ur.value.trim()) props["延伸阅读"]=ur.value.trim();
+  db.addRecord({databaseId:DB.card, properties:props}).then(function(){ msg.textContent="已入库"; refresh(); });
+}
+function sideAdd(){
+  var ti=document.getElementById("sTitle"), ca=document.getElementById("sCat"), co=document.getElementById("sCore"), de=document.getElementById("sDeep"), ur=document.getElementById("sUrl"), msg=document.getElementById("sMsg");
+  if(!ti.value.trim()){ msg.textContent="标题必填"; return; }
+  if(!LIVE){ msg.textContent="只读环境不能保存"; return; }
+  var props={"标题":ti.value.trim(),"分类":ca.value,"核心概念":co.value.trim(),"深度资料":de.value.trim(),"日期":todayStr(),"来源":"页面上传"};
+  if(ur.value.trim()) props["链接"]={link:ur.value.trim()};
+  db.addRecord({databaseId:DB.side, properties:props}).then(function(){ msg.textContent="已入库"; refresh(); });
+}
+
+/* ---------- 启动 ---------- */
+function injectCSS(){ var st=document.createElement("style"); st.textContent=
+  ".r2col{display:flex;gap:16px;flex-wrap:wrap}.r2col .col{flex:1;min-width:300px}"+
+  ".calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cal{border:1px solid var(--line);border-radius:6px;text-align:center;padding:7px 0;font-size:12px;color:var(--tx2)}.cal.on{background:var(--greenL);border-color:var(--green);color:var(--green);font-weight:600}"+
+  ".tag.on{background:var(--blueL);border-color:var(--blue);color:var(--blue)}"+
+  ".arch-top{background:linear-gradient(0deg,var(--blueL),transparent)}"+
+  ".col h2,.col .card h2{font-size:14px}"+
+  ".jdtable{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}.jdtable th,.jdtable td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}.jdtable th{background:var(--blueL);color:var(--tx);font-weight:600;white-space:nowrap}.jdtable .jdreq{color:var(--tx2);max-width:340px;line-height:1.5}"+"#aiPanel{display:none!important}"; document.head.appendChild(st); }
+(function init(){
+  injectCSS(); atLoad(); atStatus();
+  var btns=document.querySelectorAll("nav.tabs button"); btns.forEach(function(b){ if(b.dataset.tab===S.tab) b.classList.add("on"); });
+  refresh();
+})();
+
+</script>
+
+<!--pnid:2IlCz8zzlM7bQ7CITf0Y8o--><!-- AI 教练浮窗 -->
+<div data-page-node-id="L3T21G9emimtWvdanxse85" id="aiFab"><!--pnid:3TM9NqS3UFxQrBbH8GRVew-->🤖 <span data-page-node-id="XnzugivokP0q7qTXFEASjR"><!--pnid:uJjv0VuqKcGL549l3pjNXo-->AI 教练 ↗</span></div>
+<div data-page-node-id="HPP4SAo3R7Y1udisO3PCpN" class="hidden" id="aiPanel">
+  <div data-page-node-id="PswKOn8dc2JWAUdyfav5dR" id="aiHead">
+    <div data-page-node-id="7Y6t4ShHA4mL1UafFYVI9g"><b data-page-node-id="xsLNhlJUHmxW66sZQWpcND"><!--pnid:vn7kRyGZJPUeu62j7F8BXL-->AI 教练</b><span data-page-node-id="am3RmX8SLpSVmgApKOsdnI" class="sub" id="aiModel"><!--pnid:ZgvcDsFSgYYk79iJUZ2ZnE-->连接中…</span></div>
+    <div data-page-node-id="xpNtEUEvlzZmWXHOZKkWES" style="display:flex; gap:6px">
+      <button data-page-node-id="1BVC64AkL5mwYjojfnvA1I" class="btn ghost sm" id="aiClear"><!--pnid:ArVcdUqKWM84oXBqbkjHNB-->清空</button>
+      <button data-page-node-id="ByapYITDwB3VVbTIotD1s5" class="btn ghost sm" id="aiClose" style="padding:4px 9px"><!--pnid:J0MbxcxjOgUKWIniVvsgAT-->×</button>
+    </div>
+  </div>
+  <div data-page-node-id="kFQDxp7839AsYkBhK6Txgb" id="aiBody"></div>
+  <div data-page-node-id="5BvPjDeRjawlwxA9sgcOCw" id="aiFoot">
+    <textarea data-page-node-id="MLelAsQHvZT8mJoU1e4gJK" id="aiInput" placeholder="把你的练习答案或疑问贴进来，教练会结合陪跑台体系点评…" rows="2"></textarea>
+    <div data-page-node-id="o7bS3Y76cSoQgsof90QbGW" class="row-between" style="margin-top:7px">
+      <span data-page-node-id="E7EA1TXxWpIOhdEcRxzQNr" class="hint"><!--pnid:fFwGHO0qOLoyBKuooGrzmh-->Enter 发送 · Shift+Enter 换行</span>
+      <span data-page-node-id="yT5Y4APWWSySv02vPBf26s" style="display:flex; gap:6px">
+        <button data-page-node-id="Gu2jYJeXT2AwkOYNwMYd4E" class="btn ghost sm hidden" id="aiStop"><!--pnid:IxVouCdtYRDQVveM23firV-->停止</button>
+        <button data-page-node-id="NDu3ot0jHsM1fbRyyoJEqe" class="btn sm" id="aiSend"><!--pnid:eE5UMlrQFjR8G2rNqmT5KI-->发送</button>
+      </span>
+    </div>
+  </div>
+</div>
+<!-- AI 教练改为独立窗口打开：平台 CSP frame-src 白名单不含 app.workbuddy.host，内嵌 iframe 必被拦截 -->
+<script data-page-node-id="idz19sh1T5UfYIZikD5Ymf" src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
+<script data-page-node-id="s7A2NFhqrVUi7hdWIlZ7dZ" data-pnid-children="ckUNFOj550IGxLndf8XTm3">
+/* ============ AI 教练（cloud-service keyless LLM） ============ */
+var AI_EP = "https://peipao-tai.app.workbuddy.host";
+var COACH_URL = "https://peipao-tai.app.workbuddy.host/chat.html";
+var AI_PK = "wbpk_iTGkwbktahAc8tjJawUTr9_hF8DbMgE7LS0ZVxUqBtd3NCUWrMdgW4Q";
+var AI_SYS = "你是「架构师陪跑台」的 AI 教练，服务冲刺火山引擎通用行业解决方案架构师（目标 30-60K·18薪）的候选人徐琛。背景：商业地产与零售行业的 AI 产品，如客流动线统计、运营分析、智能体 Agent。你的职责——① 点评他写的练习答案（概念复述 / 对标拆解 / 案例拆写 / 对话盘点），指出到位与缺口，给一句可直接背的版本；② 解释知识卡概念，用「为什么、怎么做、客户会怎么问」展开；③ 模拟面试追问。要求：场景化、效果化，用数字和案例说话；不讲空话套话；口吻像教练、内容可直接复用。";
+var AI = { cloud:null, model:null, ready:false, inited:false, history:[], generating:false, controller:null, cid:null };
+
+function aiErrText(e){
+  var code = (e && e.error && e.error.code) || "";
+  if(code.indexOf("auth_")===0) return "AI 后端拒绝了本页面的请求（域名不匹配）。聊天功能只在「陪跑台 AI 链接」下可用，请改用那个链接打开。";
+  if(code.indexOf("quota_")===0) return "AI 调用额度已用尽或触发限流，请稍后再试。";
+  if(code.indexOf("request_")===0) return "请求参数有误，无法发起对话。";
+  if(code.indexOf("gateway_")===0 || code.indexOf("model_")===0) return "模型服务暂时不可用，请点「发送」重试。";
+  if(code.indexOf("internal_")===0) return "服务内部错误（请求号 "+(e&&e.requestId||"")+"），请稍后重试。";
+  return (e && e.error && e.error.message) ? String(e.error.message) : ("对话出错："+String(e));
+}
+function aiEl(id){ return document.getElementById(id); }
+function aiAddMsg(role, text){
+  var body = aiEl("aiBody"); if(!body) return null;
+  var d = document.createElement("div");
+  d.className = "ai-b " + (role==="user" ? "u" : (role==="sys" ? "sys" : "a"));
+  d.textContent = text || "";
+  body.appendChild(d);
+  body.scrollTop = body.scrollHeight;
+  return d;
+}
+function aiSetStatus(t){ var m=aiEl("aiModel"); if(m) m.textContent = t; }
+function aiEnsure(){
+  if(AI.inited) return;
+  AI.inited = true;
+  AI.cid = "c_" + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+  if(location.hostname.indexOf("app.workbuddy.host") < 0){
+    aiSetStatus("已内嵌聊天");
+    var bd = aiEl("aiBody");
+    if(bd){ bd.innerHTML = '<iframe src="https://peipao-tai.app.workbuddy.host/chat.html?v=3" title="AI 教练" style="width:100%;height:100%;min-height:380px;border:0;border-radius:10px;background:#0f1420"></iframe>'; }
+    return;
+  }
+  if(!window.WorkBuddyCloud){
+    aiSetStatus("组件未加载");
+    aiAddMsg("sys","AI 组件加载失败（网络受限或 CDN 被拦截）。请确认能访问 cdn.jsdelivr.net，或在陪跑台 AI 链接下打开。");
+    return;
+  }
+  try{
+    AI.cloud = WorkBuddyCloud.createWorkBuddyCloud({ endpoint: AI_EP, publishableKey: AI_PK });
+  }catch(e){ aiSetStatus("初始化失败"); aiAddMsg("sys","AI 初始化失败："+aiErrText(e)); return; }
+  aiSetStatus("连接中…");
+  AI.cloud.llm.models.list().then(function(models){
+    var m = models.find(function(x){ return x.disabled !== true; });
+    if(m){ AI.model = m; AI.ready = true; aiSetStatus("已连接 · "+(m.name||m.id));
+      if(AI.pendingReview){ var pr=AI.pendingReview; AI.pendingReview=null; try{ history.replaceState({}, "", location.pathname); }catch(e){} aiEl("aiInput").value=pr; aiSend(); }
+    }
+    else { aiSetStatus("暂无可用的模型"); aiAddMsg("sys","当前没有可用的模型，请联系管理员在后台启用。"); }
+  }).catch(function(e){
+    aiSetStatus("连接失败");
+    aiAddMsg("sys", aiErrText(e));
+  });
+}
+function aiOpen(){
+  var p = aiEl("aiPanel"); if(!p) return;
+  p.classList.remove("hidden");
+  var fab = aiEl("aiFab"); if(fab) fab.style.display = "none";
+  aiEnsure();
+  var body = aiEl("aiBody");
+  if(body && body.children.length===0){
+    aiAddMsg("sys","我是陪跑台 AI 教练。把你的练习答案、概念复述、或疑问贴进来，我会结合陪跑台体系给你点评和建议。");
+  }
+  setTimeout(function(){ var i=aiEl("aiInput"); if(i) i.focus(); }, 60);
+}
+function aiClose(){
+  var p = aiEl("aiPanel"); if(p) p.classList.add("hidden");
+  var fab = aiEl("aiFab"); if(fab) fab.style.display = "flex";
+}
+function aiSend(){
+  if(AI.generating) return;
+  var ta = aiEl("aiInput"); if(!ta) return;
+  var text = (ta.value||"").trim();
+  if(!text) return;
+  ta.value = "";
+  aiAddMsg("user", text);
+  AI.history.push({role:"user", content:text});
+  aiRun();
+}
+function aiRun(){
+  if(!AI.ready || !AI.cloud || !AI.model){
+    aiAddMsg("sys","AI 尚未就绪，请稍候或刷新重试。"); return;
+  }
+  AI.generating = true;
+  AI.controller = new AbortController();
+  var sendBtn = aiEl("aiSend"), stopBtn = aiEl("aiStop");
+  if(sendBtn) sendBtn.classList.add("hidden");
+  if(stopBtn) stopBtn.classList.remove("hidden");
+  var bubble = aiAddMsg("assistant", "");
+  var messages = [{role:"system", content:AI_SYS}].concat(AI.history.slice(-16));
+  var p = AI.cloud.llm.chat.completions.create({
+    model: AI.model.id,
+    messages: messages,
+    stream: true,
+    stream_options: { include_usage: true },
+    conversationId: AI.cid,
+    signal: AI.controller.signal
+  });
+  Promise.resolve(p).then(function(stream){
+    return aiConsume(stream, bubble);
+  }).catch(function(e){
+    if(e && (e.name==="AbortError" || (e.error&&e.error.code==="request_aborted"))) return;
+    var prev = bubble.textContent || "";
+    bubble.textContent = (prev ? prev+"\n\n" : "") + "⚠️ " + aiErrText(e);
+    bubble.className = "ai-b sys";
+  }).then(function(){
+    AI.generating = false;
+    if(sendBtn) sendBtn.classList.remove("hidden");
+    if(stopBtn) stopBtn.classList.add("hidden");
+    if(bubble.className.indexOf("sys")<0){
+      var t = bubble.textContent || "";
+      if(t.trim()) AI.history.push({role:"assistant", content:t});
+    }
+  });
+}
+function aiConsume(stream, bubble){
+  return new Promise(function(resolve, reject){
+    (async function(){
+      try{
+        var acc = "";
+        for await (var chunk of stream){
+          var delta = chunk.choices && chunk.choices[0] && chunk.choices[0].delta;
+          if(delta && delta.content){
+            acc += delta.content;
+            bubble.textContent = acc;
+            var body = aiEl("aiBody"); if(body) body.scrollTop = body.scrollHeight;
+          }
+        }
+        resolve();
+      }catch(e){ reject(e); }
+    })();
+  });
+}
+(function aiBind(){
+  var fab = aiEl("aiFab"); if(fab) fab.onclick = function(){ window.open(COACH_URL, "_blank"); };
+  var close = aiEl("aiClose"); if(close) close.onclick = aiClose;
+  var send = aiEl("aiSend"); if(send) send.onclick = aiSend;
+  var stop = aiEl("aiStop"); if(stop) stop.onclick = function(){ if(AI.controller) AI.controller.abort(); };
+  var clear = aiEl("aiClear"); if(clear) clear.onclick = function(){
+    AI.history = []; var b = aiEl("aiBody"); if(b) b.innerHTML = "";
+    aiAddMsg("sys","已清空对话。");
+  };
+  var ta = aiEl("aiInput");
+  if(ta) ta.addEventListener("keydown", function(e){
+    if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); aiSend(); }
+  });
+})();
+
+(function reviewDeepLink(){
+  var m = location.search.match(/[?&]review=([^&]+)/);
+  if(m){ try{ AI.pendingReview = decodeURIComponent(escape(atob(decodeURIComponent(m[1])))); }catch(e){} }
+  if(AI.pendingReview){ aiOpen(); }
+})();
+</script>
+
+</body>
+</html>

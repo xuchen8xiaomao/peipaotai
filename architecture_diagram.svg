@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 840" width="100%" role="img">
+  <title>陪跑台怎么用：一张图看懂（只有一个入口）</title>
+  <desc>你每天只打开空间页一个网址，在网页里看/传数据或问 AI 教练；数据自动存进飞书14张多维表，聊天自动走 Site 后端；本地文件和旧网页只是制作材料，不是入口。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="340" y="28" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="500" fill="#042C53">陪跑台怎么用：一张图看懂（只有一个入口）</text>
+
+  <g>
+    <rect x="290" y="44" width="100" height="40" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+    <text x="340" y="64" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="13" font-weight="500" fill="#042C53">你（徐琛）</text>
+  </g>
+  <line x1="340" y1="84" x2="340" y2="104" stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="352" y="98" font-family="sans-serif" font-size="12" fill="#0C447C">每天只打开这 1 个网址</text>
+
+  <rect x="50" y="110" width="580" height="140" rx="20" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+  <text x="72" y="136" font-family="sans-serif" font-size="14" font-weight="500" fill="#042C53">空间页 · 你唯一要记的网址</text>
+  <text x="72" y="158" font-family="sans-serif" font-size="12" fill="#0C447C">workbuddy.cn/space/d/3DxcmFIl7G2SGJjdPXvqH5</text>
+
+  <g>
+    <rect x="72" y="176" width="250" height="60" rx="10" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+    <text x="197" y="198" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="13" font-weight="500" fill="#173404">① 看 / 传 / 改：简历·知识·JD</text>
+    <text x="197" y="220" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#27500A">改动存进飞书表，立刻生效</text>
+  </g>
+  <g>
+    <rect x="348" y="176" width="250" height="60" rx="10" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+    <text x="473" y="198" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="13" font-weight="500" fill="#412402">② 问 AI 教练（聊天）</text>
+    <text x="473" y="220" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="12" fill="#633806">聊天框就长在网页里</text>
+  </g>
+
+  <text x="340" y="282" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#5F5E5A">↓ 你在网页里点一下，下面这些系统自动完成 ↓</text>
+  <line x1="197" y1="236" x2="197" y2="300" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <line x1="473" y1="236" x2="473" y2="300" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect x="50" y="300" width="280" height="92" rx="12" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+    <text x="72" y="324" font-family="sans-serif" font-size="13" font-weight="500" fill="#173404">飞书多维表 ×14</text>
+    <text x="72" y="346" font-family="sans-serif" font-size="12" fill="#27500A">你的数据真实存放处</text>
+    <text x="72" y="368" font-family="sans-serif" font-size="12" fill="#27500A">共 14 张，明细见下方清单</text>
+  </g>
+  <g>
+    <rect x="350" y="300" width="280" height="92" rx="12" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+    <text x="372" y="324" font-family="sans-serif" font-size="13" font-weight="500" fill="#412402">聊天服务器（Site）</text>
+    <text x="372" y="346" font-family="sans-serif" font-size="12" fill="#633806">peipao-tai…/chat.html</text>
+    <text x="372" y="368" font-family="sans-serif" font-size="12" fill="#633806">被网页自动调用，你从不用打开</text>
+  </g>
+
+  <rect x="50" y="404" width="580" height="392" rx="12" fill="#F7F9FC" stroke="#5F5E5A" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <text x="72" y="430" font-family="sans-serif" font-size="13" font-weight="500" fill="#2C2C2A">14 张飞书多维表 · 每张装什么</text>
+  <line x1="340" y1="440" x2="340" y2="792" stroke="#DADCE0" stroke-width="1"/>
+  <line x1="62" y1="492" x2="618" y2="492" stroke="#ECEEF2" stroke-width="1"/>
+  <line x1="62" y1="542" x2="618" y2="542" stroke="#ECEEF2" stroke-width="1"/>
+  <line x1="62" y1="592" x2="618" y2="592" stroke="#ECEEF2" stroke-width="1"/>
+  <line x1="62" y1="642" x2="618" y2="642" stroke="#ECEEF2" stroke-width="1"/>
+  <line x1="62" y1="692" x2="618" y2="692" stroke="#ECEEF2" stroke-width="1"/>
+  <line x1="62" y1="742" x2="618" y2="742" stroke="#ECEEF2" stroke-width="1"/>
+
+  <text x="66" y="461" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">能力项</text>
+  <text x="66" y="480" font-family="sans-serif" font-size="11" fill="#5F5E5A">目标岗位能力字典：能力是什么、达标判据</text>
+  <text x="66" y="511" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">知识卡</text>
+  <text x="66" y="530" font-family="sans-serif" font-size="11" fill="#5F5E5A">主线知识库，按类型分知识/模拟项目/简历包装</text>
+  <text x="66" y="561" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">面试题库</text>
+  <text x="66" y="580" font-family="sans-serif" font-size="11" fill="#5F5E5A">面试题＋你的作答与参考答案</text>
+  <text x="66" y="611" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">素材库</text>
+  <text x="66" y="630" font-family="sans-serif" font-size="11" fill="#5F5E5A">你投喂的 JD/资料/产品文档等参考</text>
+  <text x="66" y="661" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">岗位JD</text>
+  <text x="66" y="680" font-family="sans-serif" font-size="11" fill="#5F5E5A">目标岗位 JD，驱动对标与简历优化</text>
+  <text x="66" y="711" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">原始简历</text>
+  <text x="66" y="730" font-family="sans-serif" font-size="11" fill="#5F5E5A">你当前最新简历原文（简历页左栏）</text>
+  <text x="66" y="761" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">辅线知识库</text>
+  <text x="66" y="780" font-family="sans-serif" font-size="11" fill="#5F5E5A">AI 动向/知识/产品/技术随手记</text>
+
+  <text x="352" y="461" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">打卡</text>
+  <text x="352" y="480" font-family="sans-serif" font-size="11" fill="#5F5E5A">学习打卡/前台活跃计时，按天记时长</text>
+  <text x="352" y="511" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">学习记录</text>
+  <text x="352" y="530" font-family="sans-serif" font-size="11" fill="#5F5E5A">学习行为流水：学了什么、时长</text>
+  <text x="352" y="561" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">能力证据</text>
+  <text x="352" y="580" font-family="sans-serif" font-size="11" fill="#5F5E5A">你的练习/产出作为某能力的证据</text>
+  <text x="352" y="611" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">问答</text>
+  <text x="352" y="630" font-family="sans-serif" font-size="11" fill="#5F5E5A">你向 AI 教练的提问与答复记录</text>
+  <text x="352" y="661" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">等级日志</text>
+  <text x="352" y="680" font-family="sans-serif" font-size="11" fill="#5F5E5A">能力等级变化日志（升级记录）</text>
+  <text x="352" y="711" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">简历优化</text>
+  <text x="352" y="730" font-family="sans-serif" font-size="11" fill="#5F5E5A">AI 逐段优化后的简历版本</text>
+  <text x="352" y="761" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#042C53">任务反馈</text>
+  <text x="352" y="780" font-family="sans-serif" font-size="11" fill="#5F5E5A">练习任务与教练反馈</text>
+
+  <text x="50" y="820" font-family="sans-serif" font-size="12" fill="#5F5E5A">实线＝你操作　·　虚线＝系统自动　·　本地文件/旧网页＝制作材料，不是入口</text>
+</svg>
