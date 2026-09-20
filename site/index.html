@@ -36,16 +36,68 @@ table.dt td.wide{max-width:340px;line-height:1.5;color:var(--tx2)}
 .chat textarea{flex:1;resize:none;min-height:44px}
 .spin{display:inline-block;width:12px;height:12px;border:2px solid #cfd6e4;border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
 @keyframes sp{to{transform:rotate(360deg)}}
+.archsvg{width:100%;height:auto}
+.archsvg .cont{fill:#fafaf7;stroke:var(--line);stroke-width:0.5}
+.archsvg .ts{font-size:12px;fill:var(--tx2)}
+.archsvg .th{font-size:14px;font-weight:500;fill:var(--tx)}
+.archsvg .c-blue rect{fill:#E6F1FB;stroke:#85B7EB;stroke-width:0.5}
+.archsvg .c-amber rect{fill:#FAEEDA;stroke:#EF9F27;stroke-width:0.5}
+.archsvg .ln{stroke:#b9c0cc;stroke-width:1.5;fill:none}
+.fab{position:fixed;right:18px;bottom:18px;z-index:40;background:var(--blue);color:#fff;border:0;border-radius:999px;padding:10px 17px;font-weight:600;font-size:13.5px;cursor:pointer}
+#aiPanel{position:fixed;right:18px;bottom:70px;z-index:41;width:380px;max-width:calc(100vw - 32px);height:min(70vh,520px);background:#fff;border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;overflow:hidden}
+#aiPanel.hidden{display:none}
+.aihead{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.aihead b{font-size:14px}
+.aihead .hint{flex:1;color:var(--tx2);font-size:12px}
+#aiPanel .body{flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px;background:#fafaf8}
+#aiPanel .row{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);align-items:flex-end}
+#aiPanel textarea{flex:1;resize:none;min-height:42px}
+.gate{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.gate.hidden{display:none}
+.gatebox{width:100%;max-width:400px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px}
+.gatebox h1{font-size:18px;margin:0 0 4px}
+.gatebox .sub{color:var(--tx2);font-size:12.5px;margin-bottom:14px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.seg button{border:1px solid var(--line);background:#fff;color:var(--tx2);border-radius:8px;padding:5px 10px;font-size:12.5px;cursor:pointer}
+.seg button.on{background:var(--blueL);border-color:var(--blue);color:var(--blue);font-weight:600}
+.gatebox input{width:100%;margin-bottom:8px}
+.gatebox .btn{width:100%;padding:9px}
+.gatebox .btn.gray{margin-bottom:8px}
+#gateMsg{color:var(--tx2);font-size:12.5px;margin-top:10px;min-height:18px}
+#gateMsg.err{color:#c0392b}
+.who{color:var(--tx2);font-size:12px}
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:420px}
+.calw{text-align:center;font-size:11.5px;color:var(--tx2)}
+.cal{border:1px solid var(--line);border-radius:6px;text-align:center;padding:7px 0;font-size:12px;color:var(--tx2)}
+.cal.on{background:var(--greenL);border-color:#97C459;color:#3B6D11;font-weight:600}
 </style>
 </head>
 <body>
 <header>
   <b>陪跑台</b>
   <span class="sub" id="conn"><span class="spin"></span>连接中…</span>
+  <span class="who" id="who"></span>
+  <button class="btn gray sm hidden" id="signOut">退出</button>
   <span class="sub" style="margin-left:auto">通用行业解决方案架构师 · 火山引擎</span>
 </header>
 <nav id="tabs"></nav>
 <main id="main"></main>
+<button id="aiFab" class="fab">AI 教练</button>
+<div id="aiPanel" class="hidden"></div>
+<div id="gate" class="gate">
+  <div class="gatebox">
+    <h1>陪跑台</h1>
+    <div class="sub">登录后使用 · 架构师陪跑台</div>
+    <div class="seg" id="gateSeg">
+      <button data-mode="pwd" class="on">密码登录</button>
+      <button data-mode="otp">邮箱验证码</button>
+      <button data-mode="signup">注册</button>
+      <button data-mode="forgot">忘记密码</button>
+    </div>
+    <div id="gateForm"></div>
+    <div id="gateMsg"></div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
 <script>
@@ -56,11 +108,135 @@ var AI_SYS = "你是「架构师陪跑台」的 AI 教练，服务冲刺火山�
 var JD_SYS = "你是招聘信息提取助手。从用户提供的 BOSS 直聘岗位截图中提取结构化信息，只输出 JSON，不要任何解释或 markdown 代码块。字段：company(字符串,公司名)、position(字符串,岗位名)、requirement(字符串,概括岗位职责与任职要求,200字内)、domains(字符串数组,从[需求理解,平台化解决方案设计,产研协同,GTM与方法论沉淀,商业洞察]中选最相关的1到3个,没有就空数组)。";
 
 var CLOUD=null, MODEL=null, VISION=null, READY=false;
-var HIST=[], GEN=false, CID=null, TAB="ai";
+var HIST=[], GEN=false, CID=null, TAB="arch";
 
 function el(id){ return document.getElementById(id); }
 function esc(s){ return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c];}); }
 function fmtDate(v){ if(!v) return ""; var d=new Date(v); if(isNaN(d)) return String(v); return d.toISOString().slice(0,10); }
+
+/* ===================== 登录 / 注册 ===================== */
+var GATE_MODE = "pwd", GATE_ST = {};
+
+function showGate(){ var g=el("gate"); if(g) g.classList.remove("hidden"); }
+function hideGate(){ var g=el("gate"); if(g) g.classList.add("hidden"); }
+function gateMsg(t, isErr){ var m=el("gateMsg"); if(!m) return; m.textContent=t||""; m.className=isErr?"err":""; }
+function authErrText(e){
+  var k = String((e && (e.kind || e.code)) || "");
+  if(k.indexOf("unauthenticated")>=0 || k.indexOf("invalid_grant")>=0) return "账号或验证码不正确，请重试。";
+  if(k.indexOf("network")>=0 || k.indexOf("backend-unavailable")>=0) return "网络或服务暂时不可用，请稍后重试。";
+  return (e && e.message) ? String(e.message) : "操作失败，请重试。";
+}
+function renderUser(u){
+  var w=el("who"); if(w) w.textContent=(u && u.email) || "";
+  var b=el("signOut"); if(b) b.classList.remove("hidden");
+}
+function renderGate(mode){
+  GATE_MODE = mode || GATE_MODE;
+  var seg = el("gateSeg");
+  if(seg) Array.prototype.forEach.call(seg.querySelectorAll("button"), function(b){
+    b.classList.toggle("on", b.dataset.mode===GATE_MODE);
+    b.onclick = function(){ renderGate(b.dataset.mode); gateMsg(""); };
+  });
+  var h = "";
+  if(GATE_MODE==="pwd"){
+    h = '<input id="gEmail" type="email" placeholder="邮箱"><input id="gPwd" type="password" placeholder="密码"><button class="btn" id="gGo">登录</button>';
+  } else if(GATE_MODE==="otp"){
+    h = '<input id="gEmail" type="email" placeholder="邮箱"><button class="btn gray" id="gSend">发送验证码</button><input id="gCode" type="text" placeholder="邮箱收到的验证码"><button class="btn" id="gGo">验证并登录</button>';
+  } else if(GATE_MODE==="signup"){
+    h = '<input id="gEmail" type="email" placeholder="邮箱"><input id="gPwd" type="password" placeholder="设置密码（至少 6 位）"><button class="btn gray" id="gSend">发送验证码</button><input id="gCode" type="text" placeholder="邮箱收到的验证码"><button class="btn" id="gGo">完成注册</button>';
+  } else {
+    h = '<input id="gEmail" type="email" placeholder="邮箱"><button class="btn gray" id="gSend">发送验证码</button><input id="gCode" type="text" placeholder="邮箱收到的验证码"><input id="gPwd" type="password" placeholder="新密码（至少 6 位）"><button class="btn" id="gGo">重置并登录</button>';
+  }
+  el("gateForm").innerHTML = h;
+  var s=el("gSend"); if(s) s.onclick = gateSend;
+  el("gGo").onclick = gateGo;
+}
+function gateSend(){
+  var email=(el("gEmail").value||"").trim();
+  if(!email){ gateMsg("请填邮箱", true); return; }
+  gateMsg("发送中…");
+  if(GATE_MODE==="otp"){
+    CLOUD.auth.signInWithOtp({ email: email }).then(function(r){
+      if(r.error){ gateMsg(authErrText(r.error), true); return; }
+      GATE_ST.verify = r.data.verify;
+      gateMsg("验证码已发送，请查收邮箱。");
+    }).catch(function(e){ gateMsg(authErrText(e), true); });
+  } else if(GATE_MODE==="forgot"){
+    CLOUD.auth.resetPasswordForEmail(email).then(function(r){
+      if(r.error){ gateMsg(authErrText(r.error), true); return; }
+      GATE_ST.updateUser = r.data.updateUser;
+      gateMsg("验证码已发送，请查收邮箱。");
+    }).catch(function(e){ gateMsg(authErrText(e), true); });
+  } else {
+    CLOUD.auth.sendOtp({ email: email }).then(function(r){
+      if(r.error){ gateMsg(authErrText(r.error), true); return; }
+      GATE_ST.sent = r.data;
+      gateMsg("验证码已发送，请查收邮箱。");
+    }).catch(function(e){ gateMsg(authErrText(e), true); });
+  }
+}
+function gateGo(){
+  if(GATE_MODE==="pwd"){
+    var em=(el("gEmail").value||"").trim(), pw=el("gPwd").value||"";
+    if(!em || !pw){ gateMsg("请填邮箱和密码", true); return; }
+    gateMsg("登录中…");
+    CLOUD.auth.signInWithPassword({ email: em, password: pw }).then(function(r){
+      if(r.error){ gateMsg("账号或密码不正确", true); return; }
+      gateMsg(""); hideGate();
+      if(r.data && r.data.user) renderUser(r.data.user);
+    }).catch(function(e){ gateMsg(authErrText(e), true); });
+    return;
+  }
+  var code=(el("gCode").value||"").trim();
+  if(!code){ gateMsg("请填验证码", true); return; }
+  if(GATE_MODE==="otp"){
+    if(!GATE_ST.verify){ gateMsg("请先发送验证码", true); return; }
+    gateMsg("验证中…");
+    GATE_ST.verify({ token: code }).then(function(r){
+      if(r.error){ gateMsg(authErrText(r.error), true); return; }
+      hideGate();
+      if(r.data && r.data.user) renderUser(r.data.user);
+    }).catch(function(e){ gateMsg(authErrText(e), true); });
+  } else if(GATE_MODE==="signup"){
+    if(!GATE_ST.sent){ gateMsg("请先发送验证码", true); return; }
+    var np=el("gPwd").value||"";
+    if(np.length<6){ gateMsg("密码至少 6 位", true); return; }
+    gateMsg("提交中…");
+    CLOUD.auth.verifyOtp({
+      verificationId: GATE_ST.sent.verificationId,
+      token: code,
+      email: (el("gEmail").value||"").trim(),
+      isExistingUser: GATE_ST.sent.isExistingUser,
+      password: GATE_ST.sent.isExistingUser ? undefined : np
+    }).then(function(r){
+      if(r.error){ gateMsg(authErrText(r.error), true); return; }
+      hideGate();
+    }).catch(function(e){ gateMsg(authErrText(e), true); });
+  } else {
+    if(!GATE_ST.updateUser){ gateMsg("请先发送验证码", true); return; }
+    var pw2=el("gPwd").value||"";
+    if(pw2.length<6){ gateMsg("新密码至少 6 位", true); return; }
+    gateMsg("重置中…");
+    GATE_ST.updateUser({ nonce: code, password: pw2 }).then(function(r){
+      if(r.error){ gateMsg(authErrText(r.error), true); return; }
+      hideGate();
+    }).catch(function(e){ gateMsg(authErrText(e), true); });
+  }
+}
+function initAuth(){
+  if(!CLOUD || !CLOUD.auth) return;
+  CLOUD.auth.getSession().then(function(r){
+    var s = r && r.data;
+    if(s && s.user){ hideGate(); renderUser(s.user); }
+    else { showGate(); renderGate("pwd"); }
+  }).catch(function(){ showGate(); renderGate("pwd"); });
+  try{
+    CLOUD.auth.onAuthStateChange(function(event, session){
+      if(event==="SIGNED_OUT"){ showGate(); }
+      else if(session && session.user){ hideGate(); renderUser(session.user); }
+    });
+  }catch(e){}
+}
 
 /* ===================== 后端连接 ===================== */
 function initCloud(){
@@ -74,6 +250,7 @@ function initCloud(){
     VISION = list.filter(function(x){ return x.supportsImages===true; })[0] || null;
     READY = !!MODEL;
     el("conn").textContent = READY ? ("已连接 · " + (MODEL.name||MODEL.id)) : "无可用模型";
+    syncState();
   }).catch(function(e){
     el("conn").textContent = "连接失败：" + ((e && e.error && e.error.code) || "网络");
   });
@@ -91,13 +268,12 @@ function dbAdd(table, obj){
 
 /* ===================== Tab 配置 ===================== */
 var TABS = [
-  { id:"ai",     label:"AI 教练" },
-  { id:"jd",     label:"JD 解析" },
-  { id:"cards",  label:"知识卡",   table:"knowledge_cards", cols:[["title","标题"],["type","类型"],["domains","能力域"],["card_date","日期"],["concept","核心概念"]] },
-  { id:"side",   label:"辅线知识", table:"side_knowledge",  cols:[["title","标题"],["category","分类"],["content","内容"],["created_at","入库"]] },
-  { id:"study",  label:"学习记录", table:"study_logs",      cols:[["log_date","日期"],["kind","类型"],["minutes","分钟"],["content","内容"]] },
-  { id:"resume", label:"简历",     table:"resumes",         cols:[["version","版本"],["created_at","日期"],["content","内容"]] },
-  { id:"cap",    label:"能力项",   table:"capabilities",    cols:[["name","能力项"],["domain","域"],["level","等级"],["progress","进度"]] }
+  { id:"arch",   label:"架构" },
+  { id:"jd",     label:"JD" },
+  { id:"main",   label:"主线" },
+  { id:"side",   label:"辅线",   table:"side_knowledge",  cols:[["title","标题"],["category","分类"],["created_at","入库"]] },
+  { id:"resume", label:"简历",   table:"resumes",         cols:[["version","版本"],["created_at","日期"],["content","内容"]] },
+  { id:"study",  label:"学习档案" }
 ];
 
 function renderTabs(){
@@ -112,9 +288,116 @@ function renderTabs(){
 /* ===================== 渲染 ===================== */
 function render(){
   var t = TABS.filter(function(x){return x.id===TAB;})[0];
-  if(TAB==="ai") return renderAI();
+  if(TAB==="arch") return renderArch();
   if(TAB==="jd") return renderJD();
+  if(TAB==="main") return renderMain();
+  if(TAB==="study") return renderStudy();
   return renderTable(t);
+}
+
+function renderMain(){
+  el("main").innerHTML =
+    '<div class="card"><h2>主线 · 知识卡</h2><div class="sub">每日知识卡（核心概念 / 对标 / 落项目 / 深度资料）</div><div id="m1"><span class="spin"></span>加载中…</div></div>'+
+    '<div class="card"><h2>主线 · 面试题库</h2><div class="sub">题目与答题框架</div><div id="m2"><span class="spin"></span>加载中…</div></div>'+
+    '<div class="card"><h2>主线 · 素材库</h2><div class="sub">对标素材与原文</div><div id="m3"><span class="spin"></span>加载中…</div></div>';
+  paintSimple("m1","knowledge_cards","created_at",[["title","标题"],["type","类型"],["domains","能力域"],["card_date","日期"]]);
+  paintSimple("m2","interview_questions","created_at",[["question","题目"],["domains","能力域"],["answer","答题框架",1]]);
+  paintSimple("m3","materials","created_at",[["title","标题"],["kind","类型"],["content","内容",1]]);
+}
+
+function renderStudy(){
+  el("main").innerHTML =
+    '<div class="card"><h2>学习档案 · 打卡日历</h2><div class="sub">本月打卡情况（绿色 = 已打卡）</div><div id="calBox"><span class="spin"></span>加载中…</div></div>'+
+    '<div class="card"><h2>学习档案 · 学习记录</h2><div class="sub">按日期倒序</div><div id="tblLog"><span class="spin"></span>加载中…</div></div>'+
+    '<div class="card"><h2>学习档案 · 能力项</h2><div class="sub">能力域与当前等级</div><div id="tblCap"><span class="spin"></span>加载中…</div></div>'+
+    '<div class="card"><h2>学习档案 · 打卡明细</h2><div class="sub">学习日期与时长</div><div id="tblChk"><span class="spin"></span>加载中…</div></div>';
+  dbList("checkins","checkin_date").then(function(rows){
+    el("calBox").innerHTML = calHtml(rows.map(function(r){ return r.checkin_date; }));
+  }).catch(function(){ el("calBox").innerHTML = '<div class="empty">读取失败</div>'; });
+  paintSimple("tblLog","study_logs","log_date",[["log_date","日期"],["kind","类型"],["minutes","分钟"],["content","内容",1]]);
+  paintSimple("tblCap","capabilities","updated_at",[["name","能力项"],["domain","域"],["level","等级"],["progress","进度"]]);
+  paintSimple("tblChk","checkins","checkin_date",[["checkin_date","日期"],["minutes","分钟"]]);
+}
+function calHtml(dates){
+  var now = new Date(), y = now.getFullYear(), m = now.getMonth();
+  var first = new Date(y, m, 1).getDay();
+  var days = new Date(y, m+1, 0).getDate();
+  var set = {};
+  (dates||[]).forEach(function(d){ if(d) set[String(d).slice(0,10)] = true; });
+  var h = '<div class="calgrid">';
+  ['日','一','二','三','四','五','六'].forEach(function(w){ h += '<div class="calw">'+w+'</div>'; });
+  for(var i=0;i<first;i++) h += '<div></div>';
+  for(var d=1; d<=days; d++){
+    var key = y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    h += '<div class="cal' + (set[key] ? ' on' : '') + '">' + d + '</div>';
+  }
+  return h + '</div>';
+}
+function paintSimple(boxId, table, orderCol, cols){
+  dbList(table, orderCol).then(function(rows){
+    var box = el(boxId); if(!box) return;
+    if(!rows.length){ box.innerHTML = '<div class="empty">暂无数据。</div>'; return; }
+    var h = '<table class="dt"><thead><tr>';
+    cols.forEach(function(c){ h += "<th>"+esc(c[1])+"</th>"; });
+    h += "</tr></thead><tbody>";
+    rows.forEach(function(r){
+      h += "<tr>";
+      cols.forEach(function(c){
+        var v = r[c[0]];
+        if(c[0]==="created_at") v = fmtDate(v);
+        h += '<td'+(c[2]?' class="wide"':'')+'>'+esc(v)+"</td>";
+      });
+      h += "</tr>";
+    });
+    box.innerHTML = h + "</tbody></table>";
+  }).catch(function(e){
+    var box = el(boxId); if(box) box.innerHTML = '<div class="empty">读取失败：'+esc(e.message||e.code||e)+'</div>';
+  });
+}
+
+var ARCH_SVG = '<svg class="archsvg" viewBox="0 0 680 560" xmlns="http://www.w3.org/2000/svg">'+
+'<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#b9c0cc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>'+
+'<rect class="cont" x="40" y="40" width="600" height="110" rx="20"/>'+
+'<text class="ts" x="56" y="62" dominant-baseline="central">开发与代码</text>'+
+'<g class="c-blue"><rect x="60" y="74" width="240" height="52" rx="8"/><text class="th" x="180" y="93" text-anchor="middle" dominant-baseline="central">WorkBuddy / Codex</text><text class="ts" x="180" y="111" text-anchor="middle" dominant-baseline="central">本地 AI 编码</text></g>'+
+'<g class="c-blue"><rect x="380" y="74" width="240" height="52" rx="8"/><text class="th" x="500" y="93" text-anchor="middle" dominant-baseline="central">GitHub 私有仓库</text><text class="ts" x="500" y="111" text-anchor="middle" dominant-baseline="central">只放代码 · 不放密钥</text></g>'+
+'<line class="ln" x1="302" y1="100" x2="374" y2="100" marker-end="url(#ah)"/>'+
+'<rect class="cont" x="40" y="166" width="600" height="110" rx="20"/>'+
+'<text class="ts" x="56" y="188" dominant-baseline="central">交付</text>'+
+'<g class="c-blue"><rect x="60" y="200" width="240" height="52" rx="8"/><text class="th" x="180" y="219" text-anchor="middle" dominant-baseline="central">GitHub Actions</text><text class="ts" x="180" y="237" text-anchor="middle" dominant-baseline="central">改完自动部署</text></g>'+
+'<g class="c-blue"><rect x="380" y="200" width="240" height="52" rx="8"/><text class="th" x="500" y="219" text-anchor="middle" dominant-baseline="central">前端 OSS + CDN</text><text class="ts" x="500" y="237" text-anchor="middle" dominant-baseline="central">网页本体（静态）</text></g>'+
+'<line class="ln" x1="302" y1="226" x2="374" y2="226" marker-end="url(#ah)"/>'+
+'<line class="ln" x1="340" y1="150" x2="340" y2="164" marker-end="url(#ah)"/>'+
+'<line class="ln" x1="340" y1="276" x2="340" y2="290" marker-end="url(#ah)"/>'+
+'<rect class="cont" x="40" y="292" width="600" height="200" rx="20"/>'+
+'<text class="ts" x="56" y="314" dominant-baseline="central">运行时（阿里云）</text>'+
+'<g class="c-blue"><rect x="60" y="330" width="140" height="52" rx="8"/><text class="th" x="130" y="349" text-anchor="middle" dominant-baseline="central">浏览器</text><text class="ts" x="130" y="367" text-anchor="middle" dominant-baseline="central">用户</text></g>'+
+'<g class="c-amber"><rect x="240" y="330" width="190" height="52" rx="8"/><text class="th" x="335" y="349" text-anchor="middle" dominant-baseline="central">后端代理（FC）</text><text class="ts" x="335" y="367" text-anchor="middle" dominant-baseline="central">唯一持密钥</text></g>'+
+'<g class="c-blue"><rect x="470" y="330" width="150" height="52" rx="8"/><text class="th" x="545" y="349" text-anchor="middle" dominant-baseline="central">百炼 DashScope</text><text class="ts" x="545" y="367" text-anchor="middle" dominant-baseline="central">模型调用</text></g>'+
+'<g class="c-blue"><rect x="175" y="404" width="150" height="52" rx="8"/><text class="th" x="250" y="423" text-anchor="middle" dominant-baseline="central">RDS PostgreSQL</text><text class="ts" x="250" y="441" text-anchor="middle" dominant-baseline="central">用户数据</text></g>'+
+'<g class="c-blue"><rect x="345" y="404" width="150" height="52" rx="8"/><text class="th" x="420" y="423" text-anchor="middle" dominant-baseline="central">OSS 文件</text><text class="ts" x="420" y="441" text-anchor="middle" dominant-baseline="central">截图 · 附件</text></g>'+
+'<line class="ln" x1="200" y1="356" x2="236" y2="356" marker-end="url(#ah)"/>'+
+'<line class="ln" x1="430" y1="356" x2="466" y2="356" marker-end="url(#ah)"/>'+
+'<line class="ln" x1="250" y1="382" x2="250" y2="400" marker-end="url(#ah)"/>'+
+'<line class="ln" x1="420" y1="382" x2="420" y2="400" marker-end="url(#ah)"/>'+
+'<text class="ts" x="40" y="516" dominant-baseline="central">红线：前端永不持密钥 · 仓库只放代码 · 数据库不进公网</text>'+
+'</svg>';
+
+function renderArch(){
+  el("main").innerHTML =
+    '<div class="card"><h2>陪跑台架构</h2>'+
+    '<div class="sub">一个网址承载全部：网页（前端）+ 云端数据库 + 大模型。下图是目标形态——代码进 GitHub 私有仓库，前端与数据 / 模型跑在阿里云，密钥只存在于后端。</div>'+
+    ARCH_SVG + '</div>'+
+    '<div class="card"><h2>三条红线</h2>'+
+    '<div class="sub">1. 前端永不持长期密钥——密钥只在后端（或平台托管层）。<br>2. 代码仓库只放代码：密钥走环境变量 / Secrets，提交前做密钥扫描。<br>3. 数据库不进公网，只允许后端访问。</div></div>'+
+    '<div class="card"><h2>落地三步</h2>'+
+    '<table class="dt"><thead><tr><th>步骤</th><th>做什么</th><th>风险</th></tr></thead><tbody>'+
+    '<tr><td>第一步</td><td>代码进 GitHub 私有仓库 + 前端部署到阿里云 OSS</td><td>低</td></tr>'+
+    '<tr><td>第二步</td><td>自建极简后端（函数计算）+ 百炼 Key + RDS，前端改为调自有接口</td><td>中</td></tr>'+
+    '<tr><td>第三步</td><td>加登录鉴权、OSS 直传、CI/CD 自动部署</td><td>中</td></tr>'+
+    '</tbody></table></div>'+
+    '<div class="card"><h2>当前形态</h2>'+
+    '<div class="sub">现阶段：前端托管在 WorkBuddy Site，数据库与大模型走平台托管后端（免密钥）。上图「后端代理 + RDS」相当于把这层换成阿里云自建——页面逻辑基本不变，主要改调用地址。</div></div>';
 }
 
 function renderTable(t){
@@ -142,21 +425,30 @@ function renderTable(t){
 }
 
 /* ===================== AI 教练 ===================== */
-function renderAI(){
-  el("main").innerHTML =
-    '<div class="card"><h2>AI 教练</h2><div class="sub">把你的练习答案、概念复述、或疑问贴进来，我会结合陪跑台体系点评。</div>'+
-    '<div class="chat"><div class="body" id="chatBody"></div>'+
-    '<div class="row"><textarea id="aiInput" rows="2" placeholder="输入内容，Enter 发送 · Shift+Enter 换行"></textarea>'+
-    '<button class="btn" id="aiSend">发送</button></div></div></div>';
-  var b = el("chatBody");
-  var d = document.createElement("div");
-  d.className = "msg sys";
-  d.textContent = "我是陪跑台 AI 教练。把你的练习答案、概念复述、或疑问贴进来。";
-  b.appendChild(d);
-  var ta = el("aiInput");
-  ta.addEventListener("keydown", function(e){ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); aiSend(); } });
-  el("aiSend").onclick = aiSend;
-  ta.focus();
+function openAI(){
+  var p = el("aiPanel"); if(!p) return;
+  p.classList.remove("hidden");
+  if(!p.dataset.built){
+    p.dataset.built = "1";
+    p.innerHTML =
+      '<div class="aihead"><b>AI 教练</b><span class="hint" id="aiState"></span><button class="btn gray sm" id="aiClose">关闭</button></div>'+
+      '<div class="body" id="chatBody"></div>'+
+      '<div class="row"><textarea id="aiInput" rows="2" placeholder="输入内容，Enter 发送 · Shift+Enter 换行"></textarea><button class="btn" id="aiSend">发送</button></div>';
+    var d = document.createElement("div");
+    d.className = "msg sys";
+    d.textContent = "我是陪跑台 AI 教练。把你的练习答案、概念复述、或疑问贴进来。";
+    el("chatBody").appendChild(d);
+    el("aiClose").onclick = function(){ p.classList.add("hidden"); };
+    var ta = el("aiInput");
+    ta.addEventListener("keydown", function(e){ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); aiSend(); } });
+    el("aiSend").onclick = aiSend;
+    syncState();
+  }
+  var t2 = el("aiInput"); if(t2) t2.focus();
+}
+function syncState(){
+  var s = el("aiState"); if(!s) return;
+  s.textContent = READY ? ("已连接 · " + ((MODEL && (MODEL.name||MODEL.id)) || "")) : "连接中…";
 }
 function aiBubble(role, text){
   var b = el("chatBody"); if(!b) return null;
@@ -287,6 +579,10 @@ function jdGo(){
 renderTabs();
 render();
 initCloud();
+initAuth();
+el("aiFab").onclick = openAI;
+var so = el("signOut");
+if(so) so.onclick = function(){ CLOUD.auth.signOut().then(function(){ location.reload(); }).catch(function(){ location.reload(); }); };
 </script>
 </body>
 </html>

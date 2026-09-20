@@ -17,6 +17,7 @@ __pycache__/
 *.pyc
 node_modules/
 tools/_tmp*
+tools/*.txt
 *.log
 *.tmp
 .DS_Store
